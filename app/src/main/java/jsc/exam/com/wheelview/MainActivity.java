@@ -58,6 +58,8 @@ public class MainActivity extends BaseActivity {
                 bundle.putString(EmptyFragmentActivity.EXTRA_TITLE, item.getLabel().replace("Fragment", ""));
                 bundle.putBoolean(EmptyFragmentActivity.EXTRA_FULL_SCREEN, false);
                 bundle.putBoolean(EmptyFragmentActivity.EXTRA_SHOW_ACTION_BAR, true);
+                if (item.getLabel().equals("WheelViewFragment"))
+                    bundle.putBoolean(EmptyFragmentActivity.EXTRA_LANDSCAPE, true);
                 bundle.putString(EmptyFragmentActivity.EXTRA_FRAGMENT_CLASS_NAME, item.getClazz().getName());
                 EmptyFragmentActivity.launch(this, bundle);
                 break;

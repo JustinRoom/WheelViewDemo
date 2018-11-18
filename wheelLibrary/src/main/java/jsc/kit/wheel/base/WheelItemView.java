@@ -113,6 +113,31 @@ public class WheelItemView extends FrameLayout implements IViewAttrDelegate, IWh
         wheelView.setItemVerticalSpace(itemVerticalSpace);
     }
 
+    @Override
+    public void setItems(IWheel[] items) {
+        wheelView.setItems(items);
+    }
+
+    @Override
+    public int getSelectedIndex() {
+        return wheelView.getSelectedIndex();
+    }
+
+    @Override
+    public void setSelectedIndex(int targetIndexPosition) {
+        setSelectedIndex(targetIndexPosition, true);
+    }
+
+    @Override
+    public void setSelectedIndex(int targetIndexPosition, boolean withAnimation) {
+        wheelView.setSelectedIndex(targetIndexPosition, withAnimation);
+    }
+
+    @Override
+    public void setOnSelectedListener(WheelView.OnSelectedListener onSelectedListener) {
+        wheelView.setOnSelectedListener(onSelectedListener);
+    }
+
     public void  setMaskLineColor(@ColorInt int color) {
         wheelMaskView.setLineColor(color);
     }

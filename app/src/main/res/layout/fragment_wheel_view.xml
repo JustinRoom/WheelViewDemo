@@ -1,26 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".EmptyFragmentActivity">
 
-    <jsc.kit.wheel.base.WheelItemView
-        android:id="@+id/wheel_item_view"
-        android:layout_width="160dp"
-        app:wheelTotalOffsetX="-16dp"
-        app:wheelMaskLineColor="@android:color/holo_red_light"
-        app:wheelItemVerticalSpace="12dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true">
+
+        <jsc.kit.wheel.base.WheelItemView
+            android:id="@+id/wheel_view_left"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            app:wheelItemVerticalSpace="12dp"
+            app:wheelTotalOffsetX="16dp" />
+
+        <jsc.kit.wheel.base.WheelItemView
+            android:id="@+id/wheel_view_center"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            app:wheelItemVerticalSpace="12dp" />
+
+        <jsc.kit.wheel.base.WheelItemView
+            android:id="@+id/wheel_view_right"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            app:wheelItemVerticalSpace="12dp"
+            app:wheelTotalOffsetX="-16dp" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_random"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/wheel_item_view"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
         android:text="random_selected" />
+
+    <TextView
+        android:id="@+id/tv_selected_items"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/btn_random"
+        android:layout_marginLeft="12dp"
+        android:layout_toRightOf="@id/btn_random" />
 
 </RelativeLayout>

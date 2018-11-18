@@ -11,34 +11,23 @@ import android.support.annotation.ColorInt;
  */
 public interface IWheelViewSetting {
 
-    /**
-     *
-     * @param textSize the text size
-     */
     void setTextSize(float textSize);
 
-    /**
-     *
-     * @param textColor the text color
-     */
     void setTextColor(@ColorInt int textColor);
 
-    /**
-     *
-     * @param showCount the show count
-     */
     void setShowCount(int showCount);
 
-    /**
-     *
-     * @param totalOffsetX the horizontal offset
-     */
     void setTotalOffsetX(int totalOffsetX);
 
-    /**
-     *
-     * @param itemVerticalSpace the vertical space of two items
-     */
     void setItemVerticalSpace(int itemVerticalSpace);
 
+    void setItems(IWheel[] items);
+
+    int getSelectedIndex();
+
+    void setSelectedIndex(int targetIndexPosition);
+
+    void setSelectedIndex(int targetIndexPosition, boolean withAnimation);
+
+    void setOnSelectedListener(WheelView.OnSelectedListener onSelectedListener);
 }

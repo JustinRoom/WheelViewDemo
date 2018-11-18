@@ -1,5 +1,6 @@
 package jsc.exam.com.wheelview;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,7 @@ public abstract class BaseEmptyFragmentActivity extends AppCompatActivity {
     public final static String EXTRA_SHOW_ACTION_BAR = "show_action_bar";
     public final static String EXTRA_FRAGMENT_CLASS_NAME = "class_name";
     public final static String EXTRA_TITLE = "title";
+    public final static String EXTRA_LANDSCAPE = "landscape";
 
     public abstract void initActionBar(ActionBar actionBar);
 
@@ -63,5 +65,13 @@ public abstract class BaseEmptyFragmentActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(android.R.id.content, fragment).commit();
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        if (getIntent().getBooleanExtra(EXTRA_LANDSCAPE, false) && getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+        super.onResume();
     }
 }
