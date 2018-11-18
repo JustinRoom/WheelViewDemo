@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="JSCItemLayout">
+        <!--left icon -->
+        <attr name="il_icon" format="reference"/>
+        <!-- label -->
+        <attr name="il_label" format="string"/>
+        <!-- value -->
+        <attr name="il_value" format="string"/>
+        <!-- show dot view or not -->
+        <attr name="il_showDot" format="boolean"/>
+        <attr name="il_dotSize" format="dimension"/>
+        <!-- right arrow icon -->
+        <attr name="il_arrowIcon" format="reference"/>
+    </declare-styleable>
+</resources>
