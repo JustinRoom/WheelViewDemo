@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 apply plugin: 'com.android.application'
 
 android {
@@ -9,6 +11,8 @@ android {
         versionCode version_code
         versionName version_name
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "BUILD_TIME", "\"${new SimpleDateFormat("yyyy年MM月dd日 HH:mm").format(new Date())}\"")
     }
 
     signingConfigs {
