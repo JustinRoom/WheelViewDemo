@@ -13,6 +13,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "BUILD_TIME", "\"${new SimpleDateFormat("yyyy年MM月dd日 HH:mm").format(new Date())}\"")
+        buildConfigField("String", "BASE_URL", "\"https://raw.githubusercontent.com/\"")
     }
 
     signingConfigs {

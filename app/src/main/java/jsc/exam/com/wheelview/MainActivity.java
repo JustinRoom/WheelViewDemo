@@ -1,22 +1,40 @@
 package jsc.exam.com.wheelview;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import jsc.exam.com.wheelview.adapter.BaseRecyclerViewAdapter;
 import jsc.exam.com.wheelview.adapter.BlankSpaceItemDecoration;
 import jsc.exam.com.wheelview.adapter.ClassItemAdapter;
 import jsc.exam.com.wheelview.bean.ClassItem;
 import jsc.exam.com.wheelview.fragments.AboutFragment;
 import jsc.exam.com.wheelview.fragments.WheelViewFragment;
+import jsc.exam.com.wheelview.retrofit.ApiService;
+import jsc.exam.com.wheelview.retrofit.CustomHttpClient;
+import jsc.exam.com.wheelview.retrofit.CustomRetrofit;
 import jsc.exam.com.wheelview.utils.CompatResourceUtils;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 public class MainActivity extends BaseActivity {
 
@@ -72,5 +90,77 @@ public class MainActivity extends BaseActivity {
         classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "WheelView", WheelViewFragment.class, true));
         classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "About", AboutFragment.class, false));
         return classItems;
+    }
+
+    private void loadUserInfo() {
+        OkHttpClient client = new CustomHttpClient()
+                .addHeader(new Pair<>("token", ""))
+                .setConnectTimeout(5_000)
+                .setShowLog(true)
+                .createOkHttpClient();
+        Retrofit retrofit = new CustomRetrofit()
+                //我在app的build.gradle文件的defaultConfig标签里定义了BASE_URL
+                .setBaseUrl(BuildConfig.BASE_URL)
+                .setOkHttpClient(client)
+                .createRetrofit();
+        Disposable disposable = retrofit.create(ApiService.class)
+                .getVersionInfo()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        showToast(s);
+                        explainVersionInfoJson(s);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        showToast(throwable.getLocalizedMessage());
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+
+                    }
+                });
+    }
+
+    private void explainVersionInfoJson(String json) {
+        json = json.substring(1, json.length() - 1);
+        try {
+            JSONObject object = new JSONObject(json).getJSONObject("apkInfo");
+            int versionCode = object.getInt("versionCode");
+            String versionName = object.getString("versionName");
+            String fileName = object.getString("outputFile");
+            String content = object.getString("content");
+
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_GIDS);
+            long curVersionCode = packageInfo.getLongVersionCode();
+            String curVersionName = packageInfo.versionName;
+
+            //a new version
+            if (versionCode > curVersionCode) {
+                showNewVersionDialog(String.format(
+                        Locale.CHINA,
+                        "当前版本:\u2000%1s\n"
+                                + "最新版本:\u2000%2s\n\n"
+                                + "更新内容:\n%3s",
+                        curVersionName,
+                        versionName,
+                        content
+                ));
+            }
+        } catch (JSONException | PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showNewVersionDialog(String content) {
+        new AlertDialog.Builder(this)
+                .setTitle("新版本提示")
+                .setMessage(content)
+                .setPositiveButton("知道了", null)
+                .show();
     }
 }
