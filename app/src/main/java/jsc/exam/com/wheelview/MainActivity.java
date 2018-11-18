@@ -1,12 +1,15 @@
 package jsc.exam.com.wheelview;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -65,6 +68,9 @@ public class MainActivity extends BaseActivity {
             }
         });
         adapter.setItems(getClassItems());
+
+        //check version
+        checkUpdate();
     }
 
     private void toNewActivity(ClassItem item) {
@@ -92,7 +98,7 @@ public class MainActivity extends BaseActivity {
         return classItems;
     }
 
-    private void loadUserInfo() {
+    private void checkUpdate() {
         OkHttpClient client = new CustomHttpClient()
                 .addHeader(new Pair<>("token", ""))
                 .setConnectTimeout(5_000)
@@ -145,22 +151,33 @@ public class MainActivity extends BaseActivity {
                         Locale.CHINA,
                         "当前版本:\u2000%1s\n"
                                 + "最新版本:\u2000%2s\n\n"
-                                + "更新内容:\n%3s",
+                                + "更新内容:\n%3s"
+                                + "\n立即更新？",
                         curVersionName,
                         versionName,
                         content
-                ));
+                ), fileName);
             }
         } catch (JSONException | PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    private void showNewVersionDialog(String content) {
+    private void showNewVersionDialog(String content, final String fileName) {
         new AlertDialog.Builder(this)
                 .setTitle("新版本提示")
                 .setMessage(content)
-                .setPositiveButton("知道了", null)
+                .setPositiveButton("更新", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String url = BuildConfig.BASE_URL + "JustinRoom/WheelViewDemo/master/output/%s";
+                        Uri uri = Uri.parse(String.format(Locale.CHINA, url, fileName));
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+
+                    }
+                })
+                .setNegativeButton("知道了", null)
                 .show();
     }
 }
