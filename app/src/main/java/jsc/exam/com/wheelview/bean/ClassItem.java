@@ -1,20 +1,30 @@
 package jsc.exam.com.wheelview.bean;
 
+import android.support.annotation.IntDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 public class ClassItem {
+    public static final int TYPE_ACTIVITY = 0;
+    public static final int TYPE_FRAGMENT = 1;
+    @IntDef({TYPE_ACTIVITY, TYPE_FRAGMENT})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Type {
+    }
+
     private String label;
-    private Class<?> cls;
+    private Class<?> clazz;
+    private int type;
     private boolean updated;
 
     public ClassItem() {
     }
 
-    public ClassItem(String label, Class<?> cls) {
-        this(label, cls, false);
-    }
-
-    public ClassItem(String label, Class<?> cls, boolean updated) {
+    public ClassItem(@Type int type, String label, Class<?> clazz, boolean updated) {
+        this.type = type;
         this.label = label;
-        this.cls = cls;
+        this.clazz = clazz;
         this.updated = updated;
     }
 
@@ -26,12 +36,12 @@ public class ClassItem {
         this.label = label;
     }
 
-    public Class<?> getCls() {
-        return cls;
+    public Class<?> getClazz() {
+        return clazz;
     }
 
-    public void setCls(Class<?> cls) {
-        this.cls = cls;
+    public void setClazz(Class<?> clazz) {
+        this.clazz = clazz;
     }
 
     public boolean isUpdated() {
@@ -40,5 +50,13 @@ public class ClassItem {
 
     public void setUpdated(boolean updated) {
         this.updated = updated;
+    }
+
+    public void setType(@Type int type) {
+        this.type = type;
+    }
+
+    public int getType() {
+        return type;
     }
 }

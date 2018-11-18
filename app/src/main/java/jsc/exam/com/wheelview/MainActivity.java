@@ -1,5 +1,6 @@
 package jsc.exam.com.wheelview;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,22 +49,24 @@ public class MainActivity extends BaseActivity {
     }
 
     private void toNewActivity(ClassItem item) {
-        Bundle bundle = new Bundle();
-        switch (item.getLabel()){
-            case "WheelViewFragment":
-                bundle.putString(EmptyFragmentActivity.EXTRA_TITLE, "Take photo");
+        switch (item.getType()) {
+            case ClassItem.TYPE_ACTIVITY:
+                startActivity(new Intent(this, item.getClazz()));
+                break;
+            case ClassItem.TYPE_FRAGMENT:
+                Bundle bundle = new Bundle();
+                bundle.putString(EmptyFragmentActivity.EXTRA_TITLE, item.getLabel().replace("Fragment", ""));
                 bundle.putBoolean(EmptyFragmentActivity.EXTRA_FULL_SCREEN, false);
-                bundle.putBoolean(EmptyFragmentActivity.EXTRA_SHOW_ACTION_BAR, false);
-                bundle.putString(EmptyFragmentActivity.EXTRA_FRAGMENT_CLASS_NAME, WheelViewFragment.class.getName());
+                bundle.putBoolean(EmptyFragmentActivity.EXTRA_SHOW_ACTION_BAR, true);
+                bundle.putString(EmptyFragmentActivity.EXTRA_FRAGMENT_CLASS_NAME, item.getClazz().getName());
+                EmptyFragmentActivity.launch(this, bundle);
                 break;
         }
-        EmptyFragmentActivity.launch(this, bundle);
     }
 
     private List<ClassItem> getClassItems() {
         List<ClassItem> classItems = new ArrayList<>();
-        classItems.add(new ClassItem("WheelViewFragment", EmptyFragmentActivity.class));
-//        classItems.add(new ClassItem("About", AboutActivity.class));
+        classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "WheelViewFragment", WheelViewFragment.class, true));
         return classItems;
     }
 }
