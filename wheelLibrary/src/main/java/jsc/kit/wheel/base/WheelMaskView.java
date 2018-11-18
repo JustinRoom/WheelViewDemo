@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -20,6 +21,7 @@ public class WheelMaskView extends View implements IViewAttrDelegate {
     private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private int top = 0;
     private int bottom = 0;
+    private int lineColor = Color.BLUE;
 
     public WheelMaskView(Context context) {
         super(context);
@@ -38,7 +40,6 @@ public class WheelMaskView extends View implements IViewAttrDelegate {
 
     @Override
     public void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        paint.setColor(Color.BLUE);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(2);
     }
@@ -55,9 +56,15 @@ public class WheelMaskView extends View implements IViewAttrDelegate {
         invalidate();
     }
 
+    public void setLineColor(@ColorInt int lineColor) {
+        this.lineColor = lineColor;
+        invalidate();
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         if (top > 0 && bottom > 0) {
+            paint.setColor(lineColor);
             canvas.drawLine(0, top, getWidth(), top, paint);
             canvas.drawLine(0, bottom, getWidth(), bottom, paint);
         }

@@ -23,6 +23,18 @@ import android.view.animation.LinearInterpolator;
 import jsc.kit.wheel.R;
 
 /**
+ * Wheel view without selected mask.
+ *
+ * <br><br>
+ * {@code attrs:}
+ * <ul>
+ * <li>{@link R.styleable#WheelView_wheelTextColor}——the color of item showing text</li>
+ * <li>{@link R.styleable#WheelView_wheelTextSize}——the size of item showing text</li>
+ * <li>{@link R.styleable#WheelView_wheelShowCount}——the show count</li>
+ * <li>{@link R.styleable#WheelView_wheelTotalOffsetX}——the horizontal offset</li>
+ * <li>{@link R.styleable#WheelView_wheelItemVerticalSpace}——the vertical space of two items</li>
+ * </ul>
+ *
  * <br>Email:1006368252@qq.com
  * <br>QQ:1006368252
  * <br><a href="https://github.com/JustinRoom/JSCKit" target="_blank">https://github.com/JustinRoom/JSCKit</a>
@@ -469,6 +481,7 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
 
     @Override
     protected void onDraw(Canvas canvas) {
+        long startTime = System.currentTimeMillis();
         int tempStartSelectedIndex = selectedIndex - drawCount / 2;
         for (int i = 0; i < drawCount; i++) {
             Rect rect = drawRectArray[i];
@@ -481,6 +494,7 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
             }
             tempStartSelectedIndex++;
         }
+        Log.i(TAG, "onDraw: " + (System.currentTimeMillis() - startTime));
     }
 
     private void drawItem(Canvas canvas, Rect rect, IWheel item, int offsetY, TextPaint textPaint) {

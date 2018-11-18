@@ -9,6 +9,7 @@
         android:id="@+id/wheel_item_view"
         android:layout_width="160dp"
         app:wheelTotalOffsetX="-16dp"
+        app:wheelMaskLineColor="@android:color/holo_red_light"
         app:wheelItemVerticalSpace="12dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />

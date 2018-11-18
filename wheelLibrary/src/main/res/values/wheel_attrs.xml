@@ -21,6 +21,7 @@
         <attr name="wheelShowCount"/>
         <attr name="wheelTotalOffsetX"/>
         <attr name="wheelItemVerticalSpace"/>
+        <attr name="wheelMaskLineColor" format="color"/>
     </declare-styleable>
 
 </resources>
