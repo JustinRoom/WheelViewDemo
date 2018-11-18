@@ -3,10 +3,13 @@ package jsc.kit.wheel.base;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
@@ -15,26 +18,28 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
+
+import jsc.kit.wheel.R;
 
 /**
- *
  * <br>Email:1006368252@qq.com
  * <br>QQ:1006368252
  * <br><a href="https://github.com/JustinRoom/JSCKit" target="_blank">https://github.com/JustinRoom/JSCKit</a>
  *
  * @author jiangshicheng
  */
-public class WheelView extends View implements IViewAttrDelegate {
+public class WheelView extends View implements IViewAttrDelegate, IWheelViewSetting {
 
     private final String TAG = "WheelView";
     private TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-    private Paint.FontMetrics fontMetrics = null;
+    private float textBaseLine = 0;
 
     private IWheel[] items = null;
     /**
      * The color of show text.
      */
-    private int textColor = 0xFF333333;
+    private int textColor = Color.BLACK;
     /**
      * The size of showing text.
      * Default value is 15sp.
@@ -43,12 +48,12 @@ public class WheelView extends View implements IViewAttrDelegate {
     /**
      * The offset pixel from x coordination.
      * <ul>
-     *     <li>text align {@code right} with a positive value</li>
-     *     <li>text align {@code center} with 0 value</li>
-     *     <li>text align {@code left} with a negative value</li>
+     * <li>text align {@code right} with a positive value</li>
+     * <li>text align {@code center} with 0 value</li>
+     * <li>text align {@code left} with a negative value</li>
      * </ul>
      */
-    private int totalOffsetX = -24;
+    private int totalOffsetX = 0;
     /**
      * the average pixel length of show text.
      */
@@ -57,16 +62,20 @@ public class WheelView extends View implements IViewAttrDelegate {
      * The most showing item count.
      * use it to measure view's height
      */
-    private int showCount = 7;
+    private int showCount = 5;
     /**
      * The most draw item count.
      */
     private int drawCount = showCount + 2;
-    private Rect[] defaultRectArray = new Rect[drawCount];
-    private Rect[] drawRectArray = new Rect[drawCount];
+    private Rect[] defaultRectArray = null;
+    private Rect[] drawRectArray = null;
     private int offsetY = 0;
     private int totalMoveY = 0;//
 
+    /**
+     * the space width of two items
+     */
+    private int itemVerticalSpace = 0;
     /**
      * the height of every item
      */
@@ -99,20 +108,16 @@ public class WheelView extends View implements IViewAttrDelegate {
 
     @Override
     public void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 15, getResources().getDisplayMetrics());
-        textPaint.setColor(textColor);
-        textPaint.setTextSize(textSize);
-        fontMetrics = textPaint.getFontMetrics();
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WheelView, defStyleAttr, 0);
+        float defaultTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 15, getResources().getDisplayMetrics());
+        textColor = a.getColor(R.styleable.WheelView_wheelTextColor, 0xFF333333);
+        textSize = a.getDimension(R.styleable.WheelView_wheelTextSize, defaultTextSize);
+        showCount = a.getInt(R.styleable.WheelView_wheelShowCount, 7);
+        totalOffsetX = a.getDimensionPixelSize(R.styleable.WheelView_wheelTotalOffsetX, 0);
+        itemVerticalSpace = a.getDimensionPixelSize(R.styleable.WheelView_wheelItemVerticalSpace, 32);
+        a.recycle();
 
-        String testText = "菜单选项";
-        Rect rect = new Rect();
-        textPaint.getTextBounds(testText, 0, testText.length(), rect);
-        itemHeight = rect.height() + 20;
-        for (int i = 0; i < drawCount; i++) {
-            defaultRectArray[i] = new Rect();
-            drawRectArray[i] = new Rect();
-        }
-
+        initConfig();
         if (isInEditMode()) {
             IWheel[] items = new IWheel[50];
             for (int i = 0; i < items.length; i++) {
@@ -120,6 +125,66 @@ public class WheelView extends View implements IViewAttrDelegate {
             }
             setItems(items);
         }
+    }
+
+    private void initConfig() {
+        textPaint.setColor(textColor);
+        textPaint.setTextSize(textSize);
+        Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
+
+        String testText = "菜单选项";
+        Rect rect = new Rect();
+        textPaint.getTextBounds(testText, 0, testText.length(), rect);
+        itemHeight = rect.height() + itemVerticalSpace;
+        textBaseLine = -itemHeight / 2.0f + (itemHeight - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top;
+
+        if (showCount < 5) {
+            showCount = 5;
+        }
+        if (showCount % 2 == 0) {
+            showCount++;
+        }
+        drawCount = showCount + 2;
+        defaultRectArray = new Rect[drawCount];
+        drawRectArray = new Rect[drawCount];
+        for (int i = 0; i < drawCount; i++) {
+            defaultRectArray[i] = new Rect();
+            drawRectArray[i] = new Rect();
+        }
+    }
+
+    @Override
+    public void setTextSize(float textSize) {
+        this.textSize = textSize;
+        initConfig();
+        requestLayout();
+    }
+
+    @Override
+    public void setTextColor(@ColorInt int textColor) {
+        this.textColor = textColor;
+        textPaint.setColor(textColor);
+        invalidate();
+    }
+
+    @Override
+    public void setShowCount(int showCount) {
+        this.showCount = showCount;
+        initConfig();
+        requestLayout();
+    }
+
+    @Override
+    public void setTotalOffsetX(int totalOffsetX) {
+        this.totalOffsetX = totalOffsetX;
+        invalidate();
+    }
+
+    @Override
+    public void setItemVerticalSpace(int itemVerticalSpace) {
+        this.itemVerticalSpace = itemVerticalSpace;
+        initConfig();
+        requestLayout();
     }
 
     @Override
@@ -153,6 +218,7 @@ public class WheelView extends View implements IViewAttrDelegate {
                 isClickEvent = false;
                 touchDownTimeStamp = 0;
 
+                float moveX = event.getX();
                 float moveY = event.getY();
                 int distance = (int) (moveY - downY);
                 downY = moveY;
@@ -234,14 +300,15 @@ public class WheelView extends View implements IViewAttrDelegate {
 
     /**
      * Calculate average pixel length of show text.
+     *
      * @return the average pixel length of show text
      */
-    private float calAverageShowTextLength(){
+    private float calAverageShowTextLength() {
         if (getItemCount() == 0)
             return 0;
         float totalLength = 0;
         String showText = null;
-        for (IWheel wheel: items) {
+        for (IWheel wheel : items) {
             showText = wheel.getShowText();
             if (showText == null || showText.length() == 0)
                 continue;
@@ -326,7 +393,7 @@ public class WheelView extends View implements IViewAttrDelegate {
                     setTotalMoveY(tempTotalMoveY);
                 }
             });
-            animator.setInterpolator(new DecelerateInterpolator());
+            animator.setInterpolator(new LinearInterpolator());
             animator.addListener(new Animator.AnimatorListener() {
 
                 @Override
@@ -424,7 +491,6 @@ public class WheelView extends View implements IViewAttrDelegate {
         rect.offset(0, offsetY);
         textPaint.setAlpha(calAlpha(rect));
         final int offsetX = totalOffsetX == 0 ? 0 : calOffsetX(totalOffsetX, rect);
-        final int h = itemHeight;
         final float w = textPaint.measureText(text);
 
         float startX = 0;
@@ -441,7 +507,7 @@ public class WheelView extends View implements IViewAttrDelegate {
             startX = (getWidth() - w) / 2.0f + offsetX;
         }
         float centerY = rect.exactCenterY();
-        float baseLine = centerY - h / 2.0f + (h - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top;
+        float baseLine = centerY + textBaseLine;
         canvas.drawText(text, startX, baseLine, textPaint);
     }
 
@@ -449,7 +515,7 @@ public class WheelView extends View implements IViewAttrDelegate {
         int centerY = getHeight() / 2;
         int distance = Math.abs(centerY - rect.centerY());
         int totalDistance = itemHeight * (showCount / 2);
-        float alpha = 0.5f * distance / totalDistance;
+        float alpha = 0.6f * distance / totalDistance;
         return (int) ((1 - alpha) * 0xFF);
     }
 
