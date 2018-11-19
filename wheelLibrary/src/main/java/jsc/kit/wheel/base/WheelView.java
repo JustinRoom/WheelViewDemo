@@ -31,13 +31,11 @@ import jsc.kit.wheel.R;
  *
  * <br><br>
  * {@code attrs:}
- * <ul>
- * <li>{@link R.styleable#WheelView_wheelTextColor}——the color of item showing text</li>
- * <li>{@link R.styleable#WheelView_wheelTextSize}——the size of item showing text</li>
- * <li>{@link R.styleable#WheelView_wheelShowCount}——the show count</li>
- * <li>{@link R.styleable#WheelView_wheelTotalOffsetX}——the horizontal offset</li>
- * <li>{@link R.styleable#WheelView_wheelItemVerticalSpace}——the vertical space of two items</li>
- * </ul>
+ * <br>{@link R.styleable#WheelView_wheelTextColor}
+ * <br>{@link R.styleable#WheelView_wheelTextSize}
+ * <br>{@link R.styleable#WheelView_wheelShowCount}
+ * <br>{@link R.styleable#WheelView_wheelTotalOffsetX}
+ * <br>{@link R.styleable#WheelView_wheelItemVerticalSpace}
  *
  * <br>Email:1006368252@qq.com
  * <br>QQ:1006368252
@@ -63,11 +61,9 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
     private float textSize = 0.0f;
     /**
      * The offset pixel from x coordination.
-     * <ul>
-     * <li>text align {@code right} with a positive value</li>
-     * <li>text align {@code center} with 0 value</li>
-     * <li>text align {@code left} with a negative value</li>
-     * </ul>
+     * <br>text align {@code right} with a positive value
+     * <br>text align {@code center} with 0 value
+     * <br>text align {@code left} with a negative value
      */
     private int totalOffsetX = 0;
     /**

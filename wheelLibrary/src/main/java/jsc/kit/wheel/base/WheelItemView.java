@@ -18,14 +18,12 @@ import jsc.kit.wheel.R;
  *
  * <br><br>
  *  * {@code attrs:}
- *  * <ul>
- *  * <li>{@link R.styleable#WheelItemView_wheelTextColor}——the color of item showing text</li>
- *  * <li>{@link R.styleable#WheelItemView_wheelTextSize}——the size of item showing text</li>
- *  * <li>{@link R.styleable#WheelItemView_wheelShowCount}——the show count</li>
- *  * <li>{@link R.styleable#WheelItemView_wheelTotalOffsetX}——the horizontal offset</li>
- *  * <li>{@link R.styleable#WheelItemView_wheelItemVerticalSpace}——the vertical space of two items</li>
- *  * <li>{@link R.styleable#WheelItemView_wheelMaskLineColor}——the line color of selected item</li>
- *  * </ul>
+ *  * <br>{@link R.styleable#WheelItemView_wheelTextColor}
+ *  * <br>{@link R.styleable#WheelItemView_wheelTextSize}
+ *  * <br>{@link R.styleable#WheelItemView_wheelShowCount}
+ *  * <br>{@link R.styleable#WheelItemView_wheelTotalOffsetX}
+ *  * <br>{@link R.styleable#WheelItemView_wheelItemVerticalSpace}
+ *  * <br>{@link R.styleable#WheelItemView_wheelMaskLineColor}
  *
  * <br>Email:1006368252@qq.com
  * <br>QQ:1006368252
