@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="wheel_default_background">#F2F2F2</color>
+
+    <color name="wheel_title_bar_background_color">@color/wheel_default_background</color>
+    <color name="wheel_title_bar_title_color">@color/wheel_text_color_1</color>
+    <color name="wheel_title_bar_cancel_color">#D81B60</color>
+    <color name="wheel_title_bar_ok_color">#008577</color>
+
+    <color name="wheel_black">#000000</color>
+    <color name="wheel_white">#FFFFFF</color>
+    <color name="wheel_text_color_1">#333333</color>
+    <color name="wheel_text_color_2">#666666</color>
+    <color name="wheel_text_color_3">#999999</color>
+    <color name="wheel_text_color_4">#CCCCCC</color>
+</resources>

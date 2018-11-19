@@ -31,6 +31,7 @@ import jsc.exam.com.wheelview.adapter.BlankSpaceItemDecoration;
 import jsc.exam.com.wheelview.adapter.ClassItemAdapter;
 import jsc.exam.com.wheelview.bean.ClassItem;
 import jsc.exam.com.wheelview.fragments.AboutFragment;
+import jsc.exam.com.wheelview.fragments.OneColumnWheelFragment;
 import jsc.exam.com.wheelview.fragments.WheelViewFragment;
 import jsc.exam.com.wheelview.retrofit.ApiService;
 import jsc.exam.com.wheelview.retrofit.CustomHttpClient;
@@ -94,6 +95,7 @@ public class MainActivity extends BaseActivity {
     private List<ClassItem> getClassItems() {
         List<ClassItem> classItems = new ArrayList<>();
         classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "WheelView", WheelViewFragment.class, true));
+        classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "OneColumnWheelDialog", OneColumnWheelFragment.class, true));
         classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "About", AboutFragment.class, false));
         return classItems;
     }
@@ -116,7 +118,6 @@ public class MainActivity extends BaseActivity {
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(String s) throws Exception {
-                        showToast(s);
                         explainVersionInfoJson(s);
                     }
                 }, new Consumer<Throwable>() {
@@ -142,9 +143,10 @@ public class MainActivity extends BaseActivity {
             String content = object.getString("content");
 
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_GIDS);
-            long curVersionCode = packageInfo.getLongVersionCode();
+            long curVersionCode = packageInfo.versionCode;
             String curVersionName = packageInfo.versionName;
 
+            Log.i("MainActivity", "explainVersionInfoJson: {versionCod" + versionCode + ", curVersionCode:" + curVersionCode);
             //a new version
             if (versionCode > curVersionCode) {
                 showNewVersionDialog(String.format(

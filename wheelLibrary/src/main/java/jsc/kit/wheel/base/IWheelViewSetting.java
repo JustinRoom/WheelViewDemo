@@ -30,4 +30,6 @@ public interface IWheelViewSetting {
     void setSelectedIndex(int targetIndexPosition, boolean withAnimation);
 
     void setOnSelectedListener(WheelView.OnSelectedListener onSelectedListener);
+
+    boolean isScrolling();
 }

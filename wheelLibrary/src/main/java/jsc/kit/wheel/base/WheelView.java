@@ -54,7 +54,7 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
     private int textColor = Color.BLACK;
     /**
      * The size of showing text.
-     * Default value is 15sp.
+     * Default value is 14dp.
      */
     private float textSize = 0.0f;
     /**
@@ -96,6 +96,7 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
     private int selectedIndex = 0;//the selected index position
     private OnSelectedListener onSelectedListener = null;
     private ValueAnimator animator = null;
+    private boolean isScrolling = false;
     private boolean isAnimatorCanceledForwardly = false;//whether cancel auto scroll animation forwardly
 
     private static final long CLICK_EVENT_INTERNAL_TIME = 2000;
@@ -121,10 +122,10 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
     @Override
     public void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WheelView, defStyleAttr, 0);
-        float defaultTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 15, getResources().getDisplayMetrics());
+        float defaultTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, getResources().getDisplayMetrics());
         textColor = a.getColor(R.styleable.WheelView_wheelTextColor, 0xFF333333);
         textSize = a.getDimension(R.styleable.WheelView_wheelTextSize, defaultTextSize);
-        showCount = a.getInt(R.styleable.WheelView_wheelShowCount, 7);
+        showCount = a.getInt(R.styleable.WheelView_wheelShowCount, 5);
         totalOffsetX = a.getDimensionPixelSize(R.styleable.WheelView_wheelTotalOffsetX, 0);
         itemVerticalSpace = a.getDimensionPixelSize(R.styleable.WheelView_wheelItemVerticalSpace, 32);
         a.recycle();
@@ -310,6 +311,11 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
         }
     }
 
+    @Override
+    public boolean isScrolling() {
+        return isScrolling;
+    }
+
     /**
      * Calculate average pixel length of show text.
      *
@@ -410,11 +416,12 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
 
                 @Override
                 public void onAnimationStart(Animator animation) {
-
+                    isScrolling = true;
                 }
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
+                    isScrolling = false;
                     if (isAnimatorCanceledForwardly) {
                         Log.i(TAG, "onAnimationEnd: Cancel animation forwardly.");
                         isAnimatorCanceledForwardly = false;

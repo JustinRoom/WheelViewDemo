@@ -56,10 +56,10 @@ public class WheelItemView extends FrameLayout implements IViewAttrDelegate, IWh
     @Override
     public void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WheelItemView, defStyleAttr, 0);
-        float defaultTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 15, getResources().getDisplayMetrics());
+        float defaultTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, getResources().getDisplayMetrics());
         int textColor = a.getColor(R.styleable.WheelItemView_wheelTextColor, 0xFF333333);
         float textSize = a.getDimension(R.styleable.WheelItemView_wheelTextSize, defaultTextSize);
-        int showCount = a.getInt(R.styleable.WheelItemView_wheelShowCount, 7);
+        int showCount = a.getInt(R.styleable.WheelItemView_wheelShowCount, 5);
         int totalOffsetX = a.getDimensionPixelSize(R.styleable.WheelItemView_wheelTotalOffsetX, 0);
         int itemVerticalSpace = a.getDimensionPixelSize(R.styleable.WheelItemView_wheelItemVerticalSpace, 32);
         int maskLineColor = a.getColor(R.styleable.WheelItemView_wheelMaskLineColor, Color.BLUE);
@@ -148,5 +148,10 @@ public class WheelItemView extends FrameLayout implements IViewAttrDelegate, IWh
 
     public WheelMaskView getWheelMaskView() {
         return wheelMaskView;
+    }
+
+    @Override
+    public boolean isScrolling() {
+        return wheelView.isScrolling();
     }
 }

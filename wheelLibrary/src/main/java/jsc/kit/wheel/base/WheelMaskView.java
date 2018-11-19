@@ -21,7 +21,7 @@ public class WheelMaskView extends View implements IViewAttrDelegate {
     private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private int top = 0;
     private int bottom = 0;
-    private int lineColor = Color.BLUE;
+    private int lineColor = 0x8F0000FF;
 
     public WheelMaskView(Context context) {
         super(context);
@@ -41,7 +41,7 @@ public class WheelMaskView extends View implements IViewAttrDelegate {
     @Override
     public void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(2);
+        paint.setStrokeWidth(1);
     }
 
     public void updateMask(int heightCount, int itemHeight) {

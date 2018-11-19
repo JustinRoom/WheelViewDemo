@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="wheel_title_bar_title_size">15dp</dimen>
+    <dimen name="wheel_title_bar_cancel_size">15dp</dimen>
+    <dimen name="wheel_title_bar_ok_size">15dp</dimen>
+
+</resources>
