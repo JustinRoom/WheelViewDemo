@@ -2,6 +2,7 @@ package jsc.exam.com.wheelview;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -18,8 +19,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.prefs.Preferences;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -43,6 +47,7 @@ import retrofit2.Retrofit;
 public class MainActivity extends BaseActivity {
 
     RecyclerView recyclerView;
+    SharedPreferences sharedPreferences = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +75,13 @@ public class MainActivity extends BaseActivity {
         });
         adapter.setItems(getClassItems());
 
-        //check version
-        checkUpdate();
+        //check upgrade if the latest checking time is 2 hours ago
+        sharedPreferences = getSharedPreferences("share_wheel_view", MODE_PRIVATE);
+        long lastCheckUpdateTimeStamp = sharedPreferences.getLong("lastCheckUpdateTimeStamp", 0);
+        long curTime = new Date().getTime();
+        if (curTime - lastCheckUpdateTimeStamp > 2 * 60 * 60_000) {
+            checkUpdate();
+        }
     }
 
     private void toNewActivity(ClassItem item) {
@@ -149,12 +159,13 @@ public class MainActivity extends BaseActivity {
             Log.i("MainActivity", "explainVersionInfoJson: {versionCod" + versionCode + ", curVersionCode:" + curVersionCode);
             //a new version
             if (versionCode > curVersionCode) {
+                sharedPreferences.edit().putLong("lastCheckUpdateTimeStamp", new Date().getTime()).apply();
                 showNewVersionDialog(String.format(
                         Locale.CHINA,
                         "当前版本:\u2000%1s\n"
                                 + "最新版本:\u2000%2s\n\n"
                                 + "更新内容:\n%3s"
-                                + "\n立即更新？",
+                                + "\n\n立即更新？",
                         curVersionName,
                         versionName,
                         content

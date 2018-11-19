@@ -36,6 +36,15 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_check_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/btn_background"
+        android:gravity="center"
+        android:text="检查更新" />
+
     <TextView
         android:id="@+id/tv_build_time"
         android:layout_width="wrap_content"
