@@ -1,5 +1,5 @@
 # WheelView
-# ![_latestVersion](https://bintray.com/justinquote/maven/wheel-view/_latestVersion)
+# ![_latestVersion](https://api.bintray.com/packages/justinquote/maven/wheel-view/images/download.svg)
 A wheel view library and demo
 
 
