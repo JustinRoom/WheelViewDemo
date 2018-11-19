@@ -51,9 +51,9 @@ public class WheelViewFragment extends Fragment {
                 wheelViewRight.setSelectedIndex(new Random().nextInt(50));
             }
         });
-        loadData(wheelViewLeft);
-        loadData(wheelViewCenter);
-        loadData(wheelViewRight);
+        loadData(wheelViewLeft, "很长的左边菜单");
+        loadData(wheelViewCenter, "中间菜单");
+        loadData(wheelViewRight,  "很长的右边边菜单");
         return root;
     }
 
@@ -63,6 +63,14 @@ public class WheelViewFragment extends Fragment {
         WheelItem[] items = new WheelItem[50];
         for (int i = 0; i < 50; i++) {
             items[i] = new WheelItem(randomShowText[random.nextInt(5)] + (i < 10 ? "0" + i : "" + i));
+        }
+        wheelItemView.setItems(items);
+    }
+
+    private void loadData(WheelItemView wheelItemView, String label) {
+        WheelItem[] items = new WheelItem[50];
+        for (int i = 0; i < 50; i++) {
+            items[i] = new WheelItem(label + (i < 10 ? "0" + i : "" + i));
         }
         wheelItemView.setItems(items);
     }

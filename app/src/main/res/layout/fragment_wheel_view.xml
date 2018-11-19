@@ -17,7 +17,7 @@
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             app:wheelItemVerticalSpace="12dp"
-            app:wheelTotalOffsetX="16dp" />
+            app:wheelTotalOffsetX="12dp" />
 
         <jsc.kit.wheel.base.WheelItemView
             android:id="@+id/wheel_view_center"
@@ -30,7 +30,7 @@
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             app:wheelItemVerticalSpace="12dp"
-            app:wheelTotalOffsetX="-16dp" />
+            app:wheelTotalOffsetX="-12dp" />
 
     </LinearLayout>
 

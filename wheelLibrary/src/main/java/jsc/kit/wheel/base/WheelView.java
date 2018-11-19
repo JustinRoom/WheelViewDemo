@@ -282,6 +282,9 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
                 recycleVelocityTracker();
                 int extraDistance = (int) currentVelocity;
                 int tempTotalMoveY = totalMoveY + extraDistance;
+                //limit fling area
+                tempTotalMoveY = Math.max(tempTotalMoveY, -(getItemCount() + showCount) * itemHeight);
+                tempTotalMoveY = Math.min(tempTotalMoveY, showCount * itemHeight);
                 Pair<Integer, Integer> pair = calculateSelectedIndex(tempTotalMoveY);
                 int tempSelectedIndex = pair.first;
                 runAutoScrollAnimation(

@@ -45,11 +45,9 @@ public class OneColumnWheelFragment extends Fragment {
 
     private void showDialog() {
         if (dialog == null) {
-            String[] randomShowText = {"菜单", "子菜单", "父系菜单", "很长的家族菜单", "ScrollMenu"};
-            Random random = new Random();
             final WheelItem[] items = new WheelItem[50];
             for (int i = 0; i < 50; i++) {
-                items[i] = new WheelItem(randomShowText[random.nextInt(5)] + (i < 10 ? "0" + i : "" + i));
+                items[i] = new WheelItem("长的菜单选项" + (i < 10 ? "0" + i : "" + i));
             }
             dialog = new OneColumnWheelDialog<>(getActivity());
             dialog.show();

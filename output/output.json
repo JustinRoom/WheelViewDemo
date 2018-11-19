@@ -1,1 +1,1 @@
-[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":1,"versionName":"0.1.0","enabled":true,"outputFile":"WheelDemo.apk","fullName":"release","baseName":"release", "content":""},"path":"WheelDemo.apk","properties":{}}]
+[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":2,"versionName":"0.1.1","enabled":true,"outputFile":"WheelDemo.apk","fullName":"release","baseName":"release", "content":"1、optimize [WheelView]\n2、add [OneColumnWheelDialog]"},"path":"WheelDemo.apk","properties":{}}]
