@@ -233,10 +233,13 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
 
                 float moveX = event.getX();
                 float moveY = event.getY();
-                int distance = (int) (moveY - downY);
-                downY = moveY;
-                totalMoveY += distance;
-                calculateSelectedIndex();
+                //invalid move event if out of touch area
+                if (moveY >= 0 && moveY <= getHeight()) {
+                    int distance = (int) (moveY - downY);
+                    downY = moveY;
+                    totalMoveY += distance;
+                    calculateSelectedIndex();
+                }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
