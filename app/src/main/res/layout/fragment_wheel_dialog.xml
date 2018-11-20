@@ -7,17 +7,48 @@
     android:orientation="vertical"
     tools:ignore="MissingDefaultResource">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_16"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_choose_time_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="选择一" />
+
+        <Button
+            android:id="@+id/btn_choose_time_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="选择二" />
+
+        <Button
+            android:id="@+id/btn_choose_time_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="选择三" />
+
+        <Button
+            android:id="@+id/btn_choose_time_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="选择四" />
+
+        <Button
+            android:id="@+id/btn_choose_time_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="选择五" />
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/tv_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_32" />
-
-    <Button
-        android:id="@+id/btn_choose_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_16"
-        android:text="选择时间" />
+        android:layout_marginTop="@dimen/space_16" />
 
 </LinearLayout>
