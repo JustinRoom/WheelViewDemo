@@ -1,7 +1,11 @@
 # WheelView
-**LatestVersion**
+**LatestVersion(Maven)**
 
-[ ![Download](https://api.bintray.com/packages/justinquote/maven/wheel-view/images/download.svg) ](https://bintray.com/justinquote/maven/wheel-view/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/justinquote/maven/wheel-view/images/download.svg) ](https://bintray.com/justinquote/maven/wheel-view/_latestVersion)  
+
+**LatestVersion(jCenter)**
+
+<a href='https://bintray.com/justinquote/maven/wheel-view?source=watch' alt='Get automatic notifications about new "wheel-view" versions'><img src='https://www.bintray.com/docs/images/bintray_badge_color.png'></a>
 
 A wheel view library and demo
 
