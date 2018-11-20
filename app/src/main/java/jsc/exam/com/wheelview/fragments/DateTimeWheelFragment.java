@@ -59,7 +59,7 @@ public class DateTimeWheelFragment extends Fragment {
             dialog = new DateTimeWheelDialog(getActivity());
             dialog.show();
             dialog.setTitle("选择时间");
-            dialog.configShowUI(DateTimeWheelDialog.SHOW_YEAR);
+            dialog.configShowUI(DateTimeWheelDialog.SHOW_YEAR_MONTH_DAY_HOUR_MINUTE);
             dialog.setCancelButton("取消", null);
             dialog.setOKButton("确定", new DateTimeWheelDialog.OnClickCallBack() {
                 @Override

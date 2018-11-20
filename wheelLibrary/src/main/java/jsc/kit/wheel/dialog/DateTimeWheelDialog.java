@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -104,7 +105,7 @@ public class DateTimeWheelDialog extends Dialog {
         initView();
     }
 
-    private void initView(){
+    private void initView() {
         isViewInitialized = true;
         LinearLayout lyPickerContainer = findViewById(R.id.wheel_id_picker_container);
         //year
@@ -141,6 +142,10 @@ public class DateTimeWheelDialog extends Dialog {
             public void onClick(View v) {
                 if (okCallBack == null) {
                     dismiss();
+                    return;
+                }
+                if (isScrolling()) {
+                    Toast.makeText(v.getContext(), "Scrolling, wait a minute", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (!okCallBack.callBack(v, selectedCalendar.getTime())) dismiss();
@@ -506,6 +511,30 @@ public class DateTimeWheelDialog extends Dialog {
             items[index] = new DateItem(type, i);
         }
         return items;
+    }
+
+    private boolean isScrolling() {
+        if (showConfig == SHOW_YEAR) {
+            return yearWheelItemView.isScrolling();
+        } else if (showConfig == SHOW_YEAR_MONTH) {
+            return yearWheelItemView.isScrolling()
+                    || monthWheelItemView.isScrolling();
+        } else if (showConfig == SHOW_YEAR_MONTH_DAY) {
+            return yearWheelItemView.isScrolling()
+                    || monthWheelItemView.isScrolling()
+                    || dayWheelItemView.isScrolling();
+        } else if (showConfig == SHOW_YEAR_MONTH_DAY_HOUR) {
+            return yearWheelItemView.isScrolling()
+                    || monthWheelItemView.isScrolling()
+                    || dayWheelItemView.isScrolling()
+                    || hourWheelItemView.isScrolling();
+        } else {
+            return yearWheelItemView.isScrolling()
+                    || monthWheelItemView.isScrolling()
+                    || dayWheelItemView.isScrolling()
+                    || hourWheelItemView.isScrolling()
+                    || minuteWheelItemView.isScrolling();
+        }
     }
 
     private boolean isSameValue(int value1, int value2) {
