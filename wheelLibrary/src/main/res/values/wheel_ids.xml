@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="wheel_id_title_bar_cancel" type="id"/>
+    <item name="wheel_id_title_bar_ok" type="id"/>
+    <item name="wheel_id_title_bar_title" type="id"/>
+    <item name="wheel_id_picker_container" type="id"/>
+
+</resources>

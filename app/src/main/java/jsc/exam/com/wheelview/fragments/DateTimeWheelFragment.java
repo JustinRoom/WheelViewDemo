@@ -9,12 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.Random;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import jsc.exam.com.wheelview.R;
-import jsc.kit.wheel.base.WheelItem;
-import jsc.kit.wheel.dialog.OneColumnWheelDialog;
-import jsc.kit.wheel.dialog.WheelDialogInterface;
+import jsc.kit.wheel.dialog.DateTimeWheelDialog;
 
 /**
  * <br>Email:1006368252@qq.com
@@ -23,7 +23,7 @@ import jsc.kit.wheel.dialog.WheelDialogInterface;
  *
  * @author jiangshicheng
  */
-public class OneColumnWheelFragment extends Fragment {
+public class DateTimeWheelFragment extends Fragment {
 
     TextView tvResult;
 
@@ -41,27 +41,35 @@ public class OneColumnWheelFragment extends Fragment {
         return root;
     }
 
-    OneColumnWheelDialog<WheelItem> dialog = null;
+    DateTimeWheelDialog dialog = null;
 
     private void showDialog() {
         if (dialog == null) {
-            final WheelItem[] items = new WheelItem[50];
-            for (int i = 0; i < 50; i++) {
-                items[i] = new WheelItem("长的菜单选项" + (i < 10 ? "0" + i : "" + i));
-            }
-            dialog = new OneColumnWheelDialog<>(getActivity());
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.YEAR, 2015);
+            calendar.set(Calendar.MONTH, 0);
+            calendar.set(Calendar.DAY_OF_MONTH, 1);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            Date startDate = calendar.getTime();
+            calendar = Calendar.getInstance();
+            calendar.set(Calendar.YEAR, 2020);
+            Date endDate = calendar.getTime();
+
+            dialog = new DateTimeWheelDialog(getActivity());
             dialog.show();
-//            dialog.setTitle("选择");
-            dialog.setNegativeButton("取消", null);
-            dialog.setPositiveButton("确定", new WheelDialogInterface<WheelItem>() {
+            dialog.setTitle("选择时间");
+            dialog.configShowUI(DateTimeWheelDialog.SHOW_YEAR);
+            dialog.setCancelButton("取消", null);
+            dialog.setOKButton("确定", new DateTimeWheelDialog.OnClickCallBack() {
                 @Override
-                public boolean onClick(int witch, int selectedIndex, WheelItem item) {
-                    tvResult.setText(item.getShowText());
-                    return true;
+                public boolean callBack(View v, @NonNull Date selectedDate) {
+                    tvResult.setText(SimpleDateFormat.getInstance().format(selectedDate));
+                    return false;
                 }
             });
-            dialog.setItems(items);
-            dialog.setSelectedIndex(new Random().nextInt(50));
+            dialog.setDateArea(startDate, endDate, true);
+            dialog.updateSelectedDate(new Date());
         } else {
             dialog.show();
         }

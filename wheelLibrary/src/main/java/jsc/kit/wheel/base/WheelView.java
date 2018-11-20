@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -47,6 +48,7 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
 
     private final String TAG = "WheelView";
     private TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+    private Matrix matrix = new Matrix();
     private float textBaseLine = 0;
 
     private IWheel[] items = null;
@@ -227,6 +229,9 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (isEmpty())
+            return super.onTouchEvent(event);
+
         initVelocityTrackerIfNotExists();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -279,8 +284,8 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
                 int extraDistance = (int) currentVelocity;
                 int tempTotalMoveY = totalMoveY + extraDistance;
                 //limit fling area
-                tempTotalMoveY = Math.max(tempTotalMoveY, -(getItemCount() + showCount) * itemHeight);
-                tempTotalMoveY = Math.min(tempTotalMoveY, showCount * itemHeight);
+                tempTotalMoveY = Math.max(tempTotalMoveY, -(getItemCount() + showCount / 2) * itemHeight);
+                tempTotalMoveY = Math.min(tempTotalMoveY, (showCount / 2) * itemHeight);
                 Pair<Integer, Integer> pair = calculateSelectedIndex(tempTotalMoveY);
                 int tempSelectedIndex = pair.first;
                 runAutoScrollAnimation(
@@ -295,20 +300,16 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
         return true;
     }
 
-    private void computeCustomScroll() {
-
-    }
-
     public void setOnSelectedListener(OnSelectedListener onSelectedListener) {
         this.onSelectedListener = onSelectedListener;
     }
 
     public void setItems(IWheel[] items) {
-        if (items == null || items.length <= 1)
-            throw new IllegalArgumentException("The length of items must more than one.");
         this.items = items;
-        averageShowTextLength = calAverageShowTextLength();
-        invalidate();
+        if (!isEmpty()) {
+            averageShowTextLength = calAverageShowTextLength();
+            invalidate();
+        }
     }
 
     public int getItemHeight() {
@@ -368,8 +369,6 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
      * @return the average pixel length of show text
      */
     private float calAverageShowTextLength() {
-        if (getItemCount() == 0)
-            return 0;
         float totalLength = 0;
         String showText = null;
         for (IWheel wheel : items) {
@@ -416,9 +415,13 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
     }
 
     private IWheel getItemAt(int position) {
-        if (position < 0 || position >= getItemCount())
+        if (isEmpty() || position < 0 || position >= getItemCount())
             return null;
         return items[position];
+    }
+
+    private boolean isEmpty(){
+        return getItemCount() == 0;
     }
 
     /**
@@ -448,8 +451,16 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
         }
         animator.setInterpolator(interpolator == null ? new LinearInterpolator() : interpolator);
         animator.setIntValues(values);
-        animator.setDuration(duration);
+        animator.setDuration(calSuitableDuration(duration));
         animator.start();
+    }
+
+    private int calSuitableDuration(int duration) {
+        int result = duration;
+        while (result > 1200) {
+            result = result / 2;
+        }
+        return result;
     }
 
     /**
@@ -534,6 +545,9 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (isEmpty())
+            return;
+
         int tempStartSelectedIndex = selectedIndex - drawCount / 2;
         for (int i = 0; i < drawCount; i++) {
             Rect rect = drawRectArray[i];
@@ -546,7 +560,6 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
             }
             tempStartSelectedIndex++;
         }
-        computeCustomScroll();
     }
 
     private void drawItem(Canvas canvas, Rect rect, IWheel item, int offsetY, TextPaint textPaint) {
@@ -574,7 +587,20 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
         }
         float centerY = rect.exactCenterY();
         float baseLine = centerY + textBaseLine;
-        canvas.drawText(text, startX, baseLine, textPaint);
+        if (totalOffsetX == 0) {
+            canvas.drawText(text, startX, baseLine, textPaint);
+        } else {
+            float skewX = calSkewX(rect);
+            if (totalOffsetX > 0) {
+                matrix.setSkew(-skewX, 0, (startX + w) / 2, centerY);
+            } else {
+                matrix.setSkew(skewX, 0, (startX + w) / 2, centerY);
+            }
+            canvas.save();
+            canvas.setMatrix(matrix);
+            canvas.drawText(text, startX, baseLine, textPaint);
+            canvas.restore();
+        }
     }
 
     private int calAlpha(Rect rect) {
@@ -583,6 +609,13 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
         int totalDistance = itemHeight * (showCount / 2);
         float alpha = 0.6f * distance / totalDistance;
         return (int) ((1 - alpha) * 0xFF);
+    }
+
+    private float calSkewX(Rect rect) {
+        int centerY = getHeight() / 2;
+        int distance = centerY - rect.centerY();
+        int totalDistance = itemHeight * (showCount / 2);
+        return 0.3f * distance / totalDistance;
     }
 
     private int calOffsetX(int totalOffsetX, Rect rect) {

@@ -17,15 +17,20 @@ public class ClassItem {
     private Class<?> clazz;
     private int type;
     private boolean updated;
+    private boolean isLandscape;
 
     public ClassItem() {
     }
 
     public ClassItem(@Type int type, String label, Class<?> clazz, boolean updated) {
+        this(type, label, clazz, updated, false);
+    }
+    public ClassItem(@Type int type, String label, Class<?> clazz, boolean updated, boolean isLandscape) {
         this.type = type;
         this.label = label;
         this.clazz = clazz;
         this.updated = updated;
+        this.isLandscape = isLandscape;
     }
 
     public String getLabel() {
@@ -58,5 +63,13 @@ public class ClassItem {
 
     public int getType() {
         return type;
+    }
+
+    public boolean isLandscape() {
+        return isLandscape;
+    }
+
+    public void setLandscape(boolean landscape) {
+        isLandscape = landscape;
     }
 }

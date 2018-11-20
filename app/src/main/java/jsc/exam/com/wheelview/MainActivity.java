@@ -35,6 +35,7 @@ import jsc.exam.com.wheelview.adapter.BlankSpaceItemDecoration;
 import jsc.exam.com.wheelview.adapter.ClassItemAdapter;
 import jsc.exam.com.wheelview.bean.ClassItem;
 import jsc.exam.com.wheelview.fragments.AboutFragment;
+import jsc.exam.com.wheelview.fragments.DateTimeWheelFragment;
 import jsc.exam.com.wheelview.fragments.OneColumnWheelFragment;
 import jsc.exam.com.wheelview.fragments.WheelViewFragment;
 import jsc.exam.com.wheelview.retrofit.ApiService;
@@ -94,7 +95,7 @@ public class MainActivity extends BaseActivity {
                 bundle.putString(EmptyFragmentActivity.EXTRA_TITLE, item.getLabel());
                 bundle.putBoolean(EmptyFragmentActivity.EXTRA_FULL_SCREEN, false);
                 bundle.putBoolean(EmptyFragmentActivity.EXTRA_SHOW_ACTION_BAR, true);
-                if (item.getLabel().equals("WheelView"))
+                if (item.isLandscape())
                     bundle.putBoolean(EmptyFragmentActivity.EXTRA_LANDSCAPE, true);
                 bundle.putString(EmptyFragmentActivity.EXTRA_FRAGMENT_CLASS_NAME, item.getClazz().getName());
                 EmptyFragmentActivity.launch(this, bundle);
@@ -104,8 +105,9 @@ public class MainActivity extends BaseActivity {
 
     private List<ClassItem> getClassItems() {
         List<ClassItem> classItems = new ArrayList<>();
-        classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "WheelView", WheelViewFragment.class, true));
+        classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "WheelView", WheelViewFragment.class, true, true));
         classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "OneColumnWheelDialog", OneColumnWheelFragment.class, true));
+        classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "DateTimeWheelDialog", DateTimeWheelFragment.class, true, true));
         classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "About", AboutFragment.class, false));
         return classItems;
     }

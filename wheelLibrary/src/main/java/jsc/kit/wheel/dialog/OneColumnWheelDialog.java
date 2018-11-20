@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import jsc.kit.wheel.R;
@@ -49,11 +50,14 @@ public class OneColumnWheelDialog<T extends IWheel> extends Dialog {
             getWindow().setBackgroundDrawable(null);
             getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
         }
-        setContentView(R.layout.wheel_dialog_one_column);
-        tvTitle = findViewById(R.id.tv_title);
-        tvCancel = findViewById(R.id.tv_cancel);
-        tvOK = findViewById(R.id.tv_ok);
-        wheelItemView = findViewById(R.id.wheel_item_view);
+        setContentView(R.layout.wheel_dialog_base);
+        LinearLayout lyPickerContainer = findViewById(R.id.wheel_id_picker_container);
+        wheelItemView = new WheelItemView(lyPickerContainer.getContext());
+        lyPickerContainer.addView(wheelItemView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+
+        tvTitle = findViewById(R.id.wheel_id_title_bar_title);
+        tvCancel = findViewById(R.id.wheel_id_title_bar_cancel);
+        tvOK = findViewById(R.id.wheel_id_title_bar_ok);
         tvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
