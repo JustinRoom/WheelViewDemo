@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +62,7 @@ public class DateTimeWheelDialog extends Dialog {
     private TextView tvTitle;
     private TextView tvCancel;
     private TextView tvOK;
+    private CharSequence clickTipsWhenIsScrolling = "Scrolling, wait a minute.";
 
     private WheelItemView yearWheelItemView;
     private WheelItemView monthWheelItemView;
@@ -145,7 +147,8 @@ public class DateTimeWheelDialog extends Dialog {
                     return;
                 }
                 if (isScrolling()) {
-                    Toast.makeText(v.getContext(), "Scrolling, wait a minute", Toast.LENGTH_SHORT).show();
+                    if (!TextUtils.isEmpty(clickTipsWhenIsScrolling))
+                        Toast.makeText(v.getContext(), clickTipsWhenIsScrolling, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (!okCallBack.callBack(v, selectedCalendar.getTime())) dismiss();
@@ -159,6 +162,10 @@ public class DateTimeWheelDialog extends Dialog {
         if (getWindow() != null) {
             getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
+    }
+
+    public void setClickTipsWhenIsScrolling(CharSequence clickTipsWhenIsScrolling) {
+        this.clickTipsWhenIsScrolling = clickTipsWhenIsScrolling;
     }
 
     public void setTitle(CharSequence title) {

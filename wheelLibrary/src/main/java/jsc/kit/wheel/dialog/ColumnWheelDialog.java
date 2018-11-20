@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ public class ColumnWheelDialog<T0 extends IWheel, T1 extends IWheel, T2 extends 
     private T2[] items2;
     private T3[] items3;
     private T4[] items4;
+    private CharSequence clickTipsWhenIsScrolling = "Scrolling, wait a minute.";
 
     private OnClickCallBack<T0, T1, T2, T3, T4> cancelCallBack = null;
     private OnClickCallBack<T0, T1, T2, T3, T4> okCallBack = null;
@@ -118,7 +120,8 @@ public class ColumnWheelDialog<T0 extends IWheel, T1 extends IWheel, T2 extends 
                     return;
                 }
                 if (isScrolling()) {
-                    Toast.makeText(v.getContext(), "Scrolling, wait a minute", Toast.LENGTH_SHORT).show();
+                    if (!TextUtils.isEmpty(clickTipsWhenIsScrolling))
+                        Toast.makeText(v.getContext(), clickTipsWhenIsScrolling, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (!okCallBack.callBack(
@@ -139,6 +142,10 @@ public class ColumnWheelDialog<T0 extends IWheel, T1 extends IWheel, T2 extends 
         if (getWindow() != null) {
             getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
+    }
+
+    public void setClickTipsWhenIsScrolling(CharSequence clickTipsWhenIsScrolling) {
+        this.clickTipsWhenIsScrolling = clickTipsWhenIsScrolling;
     }
 
     public void setTitle(CharSequence title) {
