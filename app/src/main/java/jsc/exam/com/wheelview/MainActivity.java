@@ -19,11 +19,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.prefs.Preferences;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -36,7 +34,7 @@ import jsc.exam.com.wheelview.adapter.ClassItemAdapter;
 import jsc.exam.com.wheelview.bean.ClassItem;
 import jsc.exam.com.wheelview.fragments.AboutFragment;
 import jsc.exam.com.wheelview.fragments.DateTimeWheelFragment;
-import jsc.exam.com.wheelview.fragments.OneColumnWheelFragment;
+import jsc.exam.com.wheelview.fragments.ColumnWheelFragment;
 import jsc.exam.com.wheelview.fragments.WheelViewFragment;
 import jsc.exam.com.wheelview.retrofit.ApiService;
 import jsc.exam.com.wheelview.retrofit.CustomHttpClient;
@@ -106,7 +104,7 @@ public class MainActivity extends BaseActivity {
     private List<ClassItem> getClassItems() {
         List<ClassItem> classItems = new ArrayList<>();
         classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "WheelView", WheelViewFragment.class, true, true));
-        classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "OneColumnWheelDialog", OneColumnWheelFragment.class, true));
+        classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "ColumnWheelDialog", ColumnWheelFragment.class, true, true));
         classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "DateTimeWheelDialog", DateTimeWheelFragment.class, true, true));
         classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "About", AboutFragment.class, false));
         return classItems;
