@@ -22,17 +22,17 @@ compile 'jsc.kit.wheel:wheel-view:_latestVersion'
 <dependency>
   <groupId>jsc.kit.wheel</groupId>
   <artifactId>wheel-view</artifactId>
-  <version>0.1.1</version>
+  <version>_latestVersion</version>
   <type>pom</type>
 </dependency>
 ```
 
 ### Screenshots
-+ [WheelView](/wheelLibrary/src/main/java/jsc/kit/wheel/base/WheelView.jave)
++ [WheelView](/wheelLibrary/src/main/java/jsc/kit/wheel/base/WheelView.java)
 
 ![WheelView](/output/shots/wheel_view.png)
 
-+ [ColumnWheelDialog](/wheelLibrary/src/main/java/jsc/kit/wheel/dialog/ColumnWheelDialog.jave)
++ [ColumnWheelDialog](/wheelLibrary/src/main/java/jsc/kit/wheel/dialog/ColumnWheelDialog.java)
 
 ![WheelView](/output/shots/column_wheel01.png)
 ![WheelView](/output/shots/column_wheel02.png)
@@ -40,7 +40,7 @@ compile 'jsc.kit.wheel:wheel-view:_latestVersion'
 ![WheelView](/output/shots/column_wheel04.png)
 ![WheelView](/output/shots/column_wheel05.png)
 
-+ [DateTimeWheelDialog](/wheelLibrary/src/main/java/jsc/kit/wheel/dialog/DateTimeWheelDialog.jave)
++ [DateTimeWheelDialog](/wheelLibrary/src/main/java/jsc/kit/wheel/dialog/DateTimeWheelDialog.java)
 
 ![OneColumnWheelDialog](/output/shots/date_time_wheel01.png)
 ![OneColumnWheelDialog](/output/shots/date_time_wheel02.png)
