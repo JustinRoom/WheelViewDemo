@@ -1,9 +1,7 @@
 # WheelView
-**LatestVersion(Maven)**
+**LatestVersion**
 
 [ ![Download](https://api.bintray.com/packages/justinquote/maven/wheel-view/images/download.svg) ](https://bintray.com/justinquote/maven/wheel-view/_latestVersion)  
-
-**LatestVersion(jCenter)**
 
 <a href='https://bintray.com/justinquote/maven/wheel-view?source=watch' alt='Get automatic notifications about new "wheel-view" versions'><img src='https://www.bintray.com/docs/images/bintray_badge_color.png'></a>
 
@@ -15,15 +13,6 @@ Scan QRCode to download demo application below:
 ![](/output/wheel_view_demo_qr_code.png)
 
 ### implementation
-```
-allprojects {
-    repositories {
-        ...
-        maven { url "https://dl.bintray.com/justinquote/maven" }
-    }
-}
-```
-
 + Gradle
 ```
 compile 'jsc.kit.wheel:wheel-view:_latestVersion'
