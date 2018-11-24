@@ -27,11 +27,11 @@ import jsc.kit.wheel.R;
  *
  * <br>Email:1006368252@qq.com
  * <br>QQ:1006368252
- * <br><a href="https://github.com/JustinRoom/JSCKit" target="_blank">https://github.com/JustinRoom/JSCKit</a>
+ * <br><a href="https://github.com/JustinRoom/WheelViewDemo" target="_blank">https://github.com/JustinRoom/WheelViewDemo</a>
  *
  * @author jiangshicheng
  */
-public class WheelItemView extends FrameLayout implements IViewAttrDelegate, IWheelViewSetting {
+public class WheelItemView extends FrameLayout implements IWheelViewSetting {
 
     private WheelView wheelView;
     private WheelMaskView wheelMaskView;
@@ -51,8 +51,7 @@ public class WheelItemView extends FrameLayout implements IViewAttrDelegate, IWh
         initAttr(context, attrs, defStyleAttr);
     }
 
-    @Override
-    public void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    private void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WheelItemView, defStyleAttr, 0);
         float defaultTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, getResources().getDisplayMetrics());
         int textColor = a.getColor(R.styleable.WheelItemView_wheelTextColor, 0xFF333333);

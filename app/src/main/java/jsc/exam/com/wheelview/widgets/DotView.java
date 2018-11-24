@@ -23,12 +23,12 @@ import jsc.kit.wheel.base.IViewAttrDelegate;
 /**
  * <br>Email:1006368252@qq.com
  * <br>QQ:1006368252
- * <br><a href="https://github.com/JustinRoom/JSCKit" target="_blank">https://github.com/JustinRoom/JSCKit</a>
+ * <br><a href="https://github.com/JustinRoom/WheelViewDemo" target="_blank">https://github.com/JustinRoom/WheelViewDemo</a>
  *
  * @author jiangshicheng
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class DotView extends AppCompatTextView implements IViewAttrDelegate {
+public class DotView extends AppCompatTextView {
 
     public final static int CIRCULAR = 0;
     public final static int SQUARE = 1;
@@ -58,8 +58,7 @@ public class DotView extends AppCompatTextView implements IViewAttrDelegate {
         initAttr(context, attrs, defStyleAttr);
     }
 
-    @Override
-    public void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    private void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         setGravity(Gravity.CENTER);
         setClipToOutline(true);
         setOutlineProvider(new ViewOutlineProvider() {

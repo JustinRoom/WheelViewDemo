@@ -40,11 +40,11 @@ import jsc.kit.wheel.R;
  *
  * <br>Email:1006368252@qq.com
  * <br>QQ:1006368252
- * <br><a href="https://github.com/JustinRoom/JSCKit" target="_blank">https://github.com/JustinRoom/JSCKit</a>
+ * <br><a href="https://github.com/JustinRoom/WheelViewDemo" target="_blank">https://github.com/JustinRoom/WheelViewDemo</a>
  *
  * @author jiangshicheng
  */
-public class WheelView extends View implements IViewAttrDelegate, IWheelViewSetting {
+public class WheelView extends View implements IWheelViewSetting {
 
     private final String TAG = "WheelView";
     private TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -129,8 +129,7 @@ public class WheelView extends View implements IViewAttrDelegate, IWheelViewSett
         initAttr(context, attrs, defStyleAttr);
     }
 
-    @Override
-    public void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    private void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         mOverScroller = new OverScroller(context);
         final ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
         mMinimumVelocity = viewConfiguration.getScaledMinimumFlingVelocity();

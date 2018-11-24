@@ -12,11 +12,11 @@ import android.view.View;
 /**
  * <br>Email:1006368252@qq.com
  * <br>QQ:1006368252
- * <br><a href="https://github.com/JustinRoom/JSCKit" target="_blank">https://github.com/JustinRoom/JSCKit</a>
+ * <br><a href="https://github.com/JustinRoom/WheelViewDemo" target="_blank">https://github.com/JustinRoom/WheelViewDemo</a>
  *
  * @author jiangshicheng
  */
-public class WheelMaskView extends View implements IViewAttrDelegate {
+public class WheelMaskView extends View {
 
     private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private int top = 0;
@@ -38,8 +38,7 @@ public class WheelMaskView extends View implements IViewAttrDelegate {
         initAttr(context, attrs, defStyleAttr);
     }
 
-    @Override
-    public void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    private void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(1);
     }

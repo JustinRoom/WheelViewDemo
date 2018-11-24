@@ -23,11 +23,11 @@ import jsc.kit.wheel.base.IViewAttrDelegate;
 /**
  * <br>Email:1006368252@qq.com
  * <br>QQ:1006368252
- * <br><a href="https://github.com/JustinRoom/JSCKit" target="_blank">https://github.com/JustinRoom/JSCKit</a>
+ * <br><a href="https://github.com/JustinRoom/WheelViewDemo" target="_blank">https://github.com/JustinRoom/WheelViewDemo</a>
  *
  * @author jiangshicheng
  */
-public class JSCItemLayout extends FrameLayout implements IViewAttrDelegate {
+public class JSCItemLayout extends FrameLayout {
 
     private ImageView iconView;
     private TextView labelView;
@@ -50,8 +50,7 @@ public class JSCItemLayout extends FrameLayout implements IViewAttrDelegate {
         initAttr(context, attrs, defStyleAttr);
     }
 
-    @Override
-    public void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    private void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.JSCItemLayout, defStyleAttr, 0);
 
         LayoutParams contentParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
