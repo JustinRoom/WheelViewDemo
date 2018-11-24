@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import jsc.exam.com.wheelview.R;
 import jsc.exam.com.wheelview.utils.CompatResourceUtils;
-import jsc.kit.wheel.base.IViewAttrDelegate;
 
 /**
  * <br>Email:1006368252@qq.com

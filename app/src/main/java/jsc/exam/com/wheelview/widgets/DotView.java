@@ -18,8 +18,6 @@ import android.view.ViewOutlineProvider;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import jsc.kit.wheel.base.IViewAttrDelegate;
-
 /**
  * <br>Email:1006368252@qq.com
  * <br>QQ:1006368252
