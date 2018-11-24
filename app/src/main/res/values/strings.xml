@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">WheelView</string>
+    <string name="app_update_content">
+        当前版本更新内容:
+        \n1、optimize WheelView
+        \n2、optimize WheelMaskView
+        \n3、optimize WheelItemView
+    </string>
 </resources>

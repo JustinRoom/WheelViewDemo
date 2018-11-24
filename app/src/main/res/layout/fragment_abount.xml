@@ -31,6 +31,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_16"
             android:text="version"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_16"
+            android:text="@string/app_update_content"
             android:textColor="@color/colorAccent"
             android:textSize="14sp" />
 
@@ -40,7 +48,8 @@
         android:id="@+id/btn_check_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="128dp"
         android:background="@drawable/btn_background"
         android:gravity="center"
         android:text="检查更新" />

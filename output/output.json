@@ -1,1 +1,20 @@
-[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":3,"versionName":"0.2.0","enabled":true,"outputFile":"WheelDemo.apk","fullName":"release","baseName":"release", "content":"1、optimize [WheelView]\n2、delete [OneColumnWheelDialog]\n3、add [ColumnWheelDialog]\n2、add [DateTimeWheelDialog]"},"path":"WheelDemo.apk","properties":{}}]
+[
+  {
+    "outputType": {
+      "type": "APK"
+    },
+    "apkInfo": {
+      "type": "MAIN",
+      "splits": [],
+      "versionCode": 4,
+      "versionName": "0.2.1",
+      "enabled": true,
+      "outputFile": "WheelDemo.apk",
+      "fullName": "release",
+      "baseName": "release",
+      "content": "\n1、optimize WheelView\n2、optimize WheelMaskView\n3、optimize WheelItemView"
+    },
+    "path": "WheelDemo.apk",
+    "properties": {}
+  }
+]

@@ -1,6 +1,7 @@
 package jsc.kit.wheel.base;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -8,6 +9,8 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+
+import jsc.kit.wheel.R;
 
 /**
  * <br>Email:1006368252@qq.com
@@ -39,6 +42,10 @@ public class WheelMaskView extends View {
     }
 
     private void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.WheelMaskView, defStyleAttr, 0);
+        lineColor = a.getColor(R.styleable.WheelMaskView_wheelMaskLineColor, 0x8F0000FF);
+        a.recycle();
+
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(1);
     }
