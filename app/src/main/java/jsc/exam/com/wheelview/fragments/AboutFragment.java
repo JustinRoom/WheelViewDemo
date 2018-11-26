@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -129,6 +130,8 @@ public class AboutFragment extends Fragment {
                         versionName,
                         content
                 ), fileName);
+            } else {
+                Toast.makeText(getActivity(), "已是最新版本", Toast.LENGTH_SHORT).show();
             }
         } catch (JSONException | PackageManager.NameNotFoundException e) {
             e.printStackTrace();
