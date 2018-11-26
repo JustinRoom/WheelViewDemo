@@ -6,13 +6,13 @@
     "apkInfo": {
       "type": "MAIN",
       "splits": [],
-      "versionCode": 4,
-      "versionName": "0.2.1",
+      "versionCode": 5,
+      "versionName": "0.3.0",
       "enabled": true,
       "outputFile": "WheelDemo.apk",
       "fullName": "release",
-      "baseName": "release",
-      "content": "\n1、optimize WheelView\n2、optimize WheelMaskView\n3、optimize WheelItemView"
+      "baseName": "release"
+      "content": "\n1、optimize WheelView\n2、optimize ColumnWheelDialog\n3、optimize DateTimeWheelDialog"
     },
     "path": "WheelDemo.apk",
     "properties": {}
