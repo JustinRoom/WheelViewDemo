@@ -163,12 +163,21 @@ public class ColumnWheelDialog<T0 extends IWheel, T1 extends IWheel, T2 extends 
     }
 
     public void setItems(T0[] items0, T1[] items1, T2[] items2, T3[] items3, T4[] items4) {
-        setItems(items0, items1, items2, items3, items4, 0);
+        setItems(items0, items1, items2, items3, items4, -1);
     }
 
+    /**
+     *
+     * @param items0 items0
+     * @param items1 items1
+     * @param items2 items2
+     * @param items3 items3
+     * @param items4 items4
+     * @param totalOffsetX the total offset of x axis. The default value is 4dp.
+     */
     public void setItems(T0[] items0, T1[] items1, T2[] items2, T3[] items3, T4[] items4, int totalOffsetX) {
         ensureIsViewInitialized();
-        if (totalOffsetX == 0) {
+        if (totalOffsetX == -1) {
             totalOffsetX = getContext().getResources().getDimensionPixelSize(R.dimen.wheel_picker_total_offset_x);
         }
         this.items0 = items0;

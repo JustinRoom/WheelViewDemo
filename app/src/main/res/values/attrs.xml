@@ -13,4 +13,8 @@
         <!-- right arrow icon -->
         <attr name="il_arrowIcon" format="reference"/>
     </declare-styleable>
+
+    <declare-styleable name="TextView3D">
+        <attr name="angle" format="float"/>
+    </declare-styleable>
 </resources>

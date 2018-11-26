@@ -14,23 +14,26 @@
 
         <jsc.kit.wheel.base.WheelItemView
             android:id="@+id/wheel_view_left"
-            android:layout_width="160dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             app:wheelItemVerticalSpace="12dp"
-            app:wheelTotalOffsetX="12dp" />
+            app:wheelShowCount="7"
+            app:wheelTotalOffsetX="4dp" />
 
         <jsc.kit.wheel.base.WheelItemView
             android:id="@+id/wheel_view_center"
-            android:layout_width="160dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
-            app:wheelItemVerticalSpace="12dp" />
+            app:wheelItemVerticalSpace="12dp"
+            app:wheelShowCount="7" />
 
         <jsc.kit.wheel.base.WheelItemView
             android:id="@+id/wheel_view_right"
-            android:layout_width="160dp"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             app:wheelItemVerticalSpace="12dp"
-            app:wheelTotalOffsetX="-12dp" />
+            app:wheelShowCount="7"
+            app:wheelTotalOffsetX="-4dp" />
 
     </LinearLayout>
 

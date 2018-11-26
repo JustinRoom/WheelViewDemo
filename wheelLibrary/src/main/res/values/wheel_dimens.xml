@@ -10,6 +10,6 @@
     <dimen name="wheel_picker_padding_right">0dp</dimen>
     <dimen name="wheel_picker_padding_bottom">4dp</dimen>
 
-    <dimen name="wheel_picker_total_offset_x">12dp</dimen>
+    <dimen name="wheel_picker_total_offset_x">4dp</dimen>
 
 </resources>

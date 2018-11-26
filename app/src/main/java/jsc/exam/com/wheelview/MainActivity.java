@@ -35,6 +35,7 @@ import jsc.exam.com.wheelview.bean.ClassItem;
 import jsc.exam.com.wheelview.fragments.AboutFragment;
 import jsc.exam.com.wheelview.fragments.DateTimeWheelFragment;
 import jsc.exam.com.wheelview.fragments.ColumnWheelFragment;
+import jsc.exam.com.wheelview.fragments.TestFragment;
 import jsc.exam.com.wheelview.fragments.WheelViewFragment;
 import jsc.exam.com.wheelview.retrofit.ApiService;
 import jsc.exam.com.wheelview.retrofit.CustomHttpClient;
@@ -106,6 +107,7 @@ public class MainActivity extends BaseActivity {
         classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "WheelView", WheelViewFragment.class, true, true));
         classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "ColumnWheelDialog", ColumnWheelFragment.class, true, true));
         classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "DateTimeWheelDialog", DateTimeWheelFragment.class, true, true));
+        classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "Test", TestFragment.class, true));
         classItems.add(new ClassItem(ClassItem.TYPE_FRAGMENT, "About", AboutFragment.class, false));
         return classItems;
     }

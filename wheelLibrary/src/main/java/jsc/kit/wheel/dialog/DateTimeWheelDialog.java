@@ -186,12 +186,12 @@ public class DateTimeWheelDialog extends Dialog {
     }
 
     public void configShowUI(@ShowConfig int config) {
-        configShowUI(config, 0);
+        configShowUI(config, -1);
     }
 
     public void configShowUI(@ShowConfig int showConfig, int totalOffsetX) {
         ensureIsViewInitialized();
-        if (totalOffsetX == 0) {
+        if (totalOffsetX == -1) {
             totalOffsetX = getContext().getResources().getDimensionPixelSize(R.dimen.wheel_picker_total_offset_x);
         }
         this.showConfig = showConfig;

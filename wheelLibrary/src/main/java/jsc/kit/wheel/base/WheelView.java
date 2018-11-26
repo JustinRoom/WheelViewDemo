@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Camera;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -48,6 +49,7 @@ public class WheelView extends View implements IWheelViewSetting {
 
     private final String TAG = "WheelView";
     private TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+    private Camera camera = new Camera();
     private Matrix matrix = new Matrix();
     private float textBaseLine = 0;
 
@@ -584,22 +586,29 @@ public class WheelView extends View implements IWheelViewSetting {
             //show text align center_horizontal
             startX = (getWidth() - w) / 2.0f + offsetX;
         }
+        float centerX = getWidth() / 2.0f;
         float centerY = rect.exactCenterY();
         float baseLine = centerY + textBaseLine;
-        if (totalOffsetX == 0) {
-            canvas.drawText(text, startX, baseLine, textPaint);
-        } else {
+        matrix.reset();
+        camera.save();
+        camera.rotateX(calRotationX(rect, totalOffsetX == 0 ? 45 : 75));
+        camera.getMatrix(matrix);
+        camera.restore();
+        matrix.preTranslate(-centerX, -centerY);
+        matrix.postTranslate(centerX, centerY);
+        if (totalOffsetX > 0) {
+            float skewX = 0 - calSkewX(rect);
+            centerX = (startX + w) / 2.0f;
+            matrix.setSkew(skewX, 0, centerX, centerY);
+        } else if (totalOffsetX < 0) {
             float skewX = calSkewX(rect);
-            if (totalOffsetX > 0) {
-                matrix.setSkew(-skewX, 0, (startX + w) / 2, centerY);
-            } else {
-                matrix.setSkew(skewX, 0, (startX + w) / 2, centerY);
-            }
-            canvas.save();
-            canvas.setMatrix(matrix);
-            canvas.drawText(text, startX, baseLine, textPaint);
-            canvas.restore();
+            centerX = (startX + w) / 2.0f;
+            matrix.setSkew(skewX, 0, centerX, centerY);
         }
+        canvas.save();
+        canvas.concat(matrix);
+        canvas.drawText(text, startX, baseLine, textPaint);
+        canvas.restore();
     }
 
     private int calAlpha(Rect rect) {
@@ -610,6 +619,20 @@ public class WheelView extends View implements IWheelViewSetting {
         return (int) ((1 - alpha) * 0xFF);
     }
 
+    private float calRotationX(Rect rect, float baseRotationX) {
+        int centerY = getHeight() / 2;
+        int distance = centerY - rect.centerY();
+        int totalDistance = itemHeight * (showCount / 2);
+        return baseRotationX * distance * 1.0f / totalDistance;
+    }
+
+    private float calScaleY(Rect rect) {
+        int centerY = getHeight() / 2;
+        int distance = Math.abs(centerY - rect.centerY());
+        int totalDistance = itemHeight * (showCount / 2);
+        distance = totalDistance - distance;
+        return 1 + 0.4f * distance / totalDistance;
+    }
     private float calSkewX(Rect rect) {
         int centerY = getHeight() / 2;
         int distance = centerY - rect.centerY();
