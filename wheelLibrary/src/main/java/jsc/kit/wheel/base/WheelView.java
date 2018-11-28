@@ -15,7 +15,6 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -48,6 +47,7 @@ import jsc.kit.wheel.R;
 public class WheelView extends View implements IWheelViewSetting {
 
     private final String TAG = "WheelView";
+    private static final float DEFAULT_ROTATION_X = 45;
     private TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private Camera camera = new Camera();
     private Matrix matrix = new Matrix();
@@ -87,6 +87,7 @@ public class WheelView extends View implements IWheelViewSetting {
     private Rect[] drawRectArray = null;
     private int offsetY = 0;
     private int totalMoveY = 0;//
+    private float wheelRotationX = 0;
 
     /**
      * the space width of two items
@@ -104,9 +105,8 @@ public class WheelView extends View implements IWheelViewSetting {
     private boolean isScrolling = false;
     private boolean isAnimatorCanceledForwardly = false;//whether cancel auto scroll animation forwardly
 
-    private static final long CLICK_EVENT_INTERNAL_TIME = 2000;
-    private RectF clickRectF = new RectF();
-    private boolean isClickEvent = false;
+    private static final long CLICK_EVENT_INTERNAL_TIME = 1000;
+    private RectF rectF = new RectF();
     private long touchDownTimeStamp = 0;
 
     //about fling action
@@ -145,6 +145,7 @@ public class WheelView extends View implements IWheelViewSetting {
         showCount = a.getInt(R.styleable.WheelView_wheelShowCount, 5);
         totalOffsetX = a.getDimensionPixelSize(R.styleable.WheelView_wheelTotalOffsetX, 0);
         itemVerticalSpace = a.getDimensionPixelSize(R.styleable.WheelView_wheelItemVerticalSpace, 32);
+        wheelRotationX = a.getFloat(R.styleable.WheelView_wheelRotationX, DEFAULT_ROTATION_X);
         a.recycle();
 
         initConfig();
@@ -247,8 +248,7 @@ public class WheelView extends View implements IWheelViewSetting {
                 lastY = event.getY();
 
                 //Make it as a click event when touch down,
-                //and record touch down timestamp.
-                isClickEvent = true;
+                //and record touch down time stamp.
                 touchDownTimeStamp = System.currentTimeMillis();
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -258,43 +258,77 @@ public class WheelView extends View implements IWheelViewSetting {
                 float currentX = event.getX();
                 float currentY = event.getY();
                 int distance = (int) (currentY - lastY);
+
+                int direction = 0;
+                if (distance == 0)
+                    break;
+                //more than the minimum distance, cancel click event
                 if (Math.abs(distance) >= scaledTouchSlop) {
-                    //Cancel click event.
-                    isClickEvent = false;
                     touchDownTimeStamp = 0;
                 }
-                //invalid move event if out of touch area
-                if (currentY >= 0 && currentY <= getHeight()) {
+                direction = distance / Math.abs(distance);
+
+                //initialize touch area
+                rectF.set(0, 0, getWidth(), getHeight());
+                if (rectF.contains(currentX, currentY)) {
+
+                    //inside touch area, execute move event.
                     lastX = currentX;
                     lastY = currentY;
                     totalMoveY += distance;
-                    updateByTotalMoveY();
+                    updateByTotalMoveY(totalMoveY, direction);
+                } else {
+                    //out of touch area, cancel click event
+                    touchDownTimeStamp = 0;
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                //Execute click event if it's a click event.
-                if (executeClickEvent(event.getX(), event.getY())) {
+                //calculate current velocity
+                final VelocityTracker velocityTracker = mVelocityTracker;
+                velocityTracker.computeCurrentVelocity(100, mMaximumVelocity);
+                float currentVelocity = velocityTracker.getYVelocity();
+                recycleVelocityTracker();
+
+                //if the current velocity is 0
+                if (Math.abs(currentVelocity) <= scaledTouchSlop) {
+                    if (System.currentTimeMillis() - touchDownTimeStamp <= CLICK_EVENT_INTERNAL_TIME) {
+                        //it's a click event, do it
+                        executeClickEvent(event.getX(), event.getY());
+                    } else {
+                        //do rebound animation
+                        runAutoScrollAnimation(
+                                null,
+                                totalMoveY,
+                                0 - selectedIndex * itemHeight
+                        );
+                    }
                     break;
                 }
 
-                final VelocityTracker velocityTracker = mVelocityTracker;
-                velocityTracker.computeCurrentVelocity(200, mMaximumVelocity);
-                float currentVelocity = velocityTracker.getYVelocity();
-                recycleVelocityTracker();
+                //it's a fling event.
                 int extraDistance = (int) currentVelocity;
-                int tempTotalMoveY = totalMoveY + extraDistance;
-                //limit fling area
-                tempTotalMoveY = Math.max(tempTotalMoveY, -(getItemCount() + showCount / 2) * itemHeight);
-                tempTotalMoveY = Math.min(tempTotalMoveY, (showCount / 2) * itemHeight);
-                Pair<Integer, Integer> pair = calculateSelectedIndex(tempTotalMoveY);
-                int tempSelectedIndex = pair.first;
-                runAutoScrollAnimation(
-                        null,
-                        totalMoveY,
-                        tempTotalMoveY,
-                        0 - tempSelectedIndex * itemHeight
-                );
+                if (Math.abs(extraDistance) > 0) {
+                    int tempTotalMoveY = totalMoveY + extraDistance;
+                    //limit fling area
+                    tempTotalMoveY = Math.max(tempTotalMoveY, -(getItemCount() + showCount / 2) * itemHeight);
+                    tempTotalMoveY = Math.min(tempTotalMoveY, (showCount / 2) * itemHeight);
+                    Pair<Integer, Integer> pair = calculateSelectedIndex(tempTotalMoveY, extraDistance / Math.abs(extraDistance));
+                    int tempSelectedIndex = pair.first;
+                    runAutoScrollAnimation(
+                            null,
+                            totalMoveY,
+                            tempTotalMoveY,
+                            0 - tempSelectedIndex * itemHeight
+                    );
+                } else {
+                    //do rebound animation
+                    runAutoScrollAnimation(
+                            null,
+                            totalMoveY,
+                            0 - selectedIndex * itemHeight
+                    );
+                }
                 break;
 
         }
@@ -337,6 +371,18 @@ public class WheelView extends View implements IWheelViewSetting {
      */
     public void setSelectedIndex(int targetIndexPosition) {
         setSelectedIndex(targetIndexPosition, true);
+    }
+
+    /**
+     * Set the 3D rotation.
+     *
+     * @param wheelRotationX the rotate wheel base x axis
+     */
+    public void setWheelRotationX(float wheelRotationX) {
+        if (this.wheelRotationX != wheelRotationX) {
+            this.wheelRotationX = wheelRotationX;
+            invalidate();
+        }
     }
 
     /**
@@ -386,16 +432,12 @@ public class WheelView extends View implements IWheelViewSetting {
      *
      * @return true, valid click event, else invalid.
      */
-    private boolean executeClickEvent(float upX, float upY) {
-        if (!isClickEvent
-                || System.currentTimeMillis() - touchDownTimeStamp > CLICK_EVENT_INTERNAL_TIME)
-            return false;
-
+    private void executeClickEvent(float upX, float upY) {
         boolean isValidTempSelectedIndex = false;
         int tempSelectedIndex = selectedIndex - drawCount / 2;
         for (int i = 0; i < drawCount; i++) {
-            clickRectF.set(drawRectArray[i]);
-            if (clickRectF.contains(upX, upY)) {
+            rectF.set(drawRectArray[i]);
+            if (rectF.contains(upX, upY)) {
                 isValidTempSelectedIndex = true;
                 break;
             }
@@ -406,9 +448,7 @@ public class WheelView extends View implements IWheelViewSetting {
                 && tempSelectedIndex < getItemCount()) {
             //Move to target selected index
             setSelectedIndex(tempSelectedIndex);
-            return true;
         }
-        return false;
     }
 
     private int getItemCount() {
@@ -421,7 +461,7 @@ public class WheelView extends View implements IWheelViewSetting {
         return items[position];
     }
 
-    private boolean isEmpty(){
+    private boolean isEmpty() {
         return getItemCount() == 0;
     }
 
@@ -474,7 +514,7 @@ public class WheelView extends View implements IWheelViewSetting {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int tempTotalMoveY = (int) animation.getAnimatedValue();
-                    setTotalMoveY(tempTotalMoveY);
+                    updateByTotalMoveY(tempTotalMoveY, 0);
                 }
             });
             animator.setInterpolator(new LinearInterpolator());
@@ -488,8 +528,8 @@ public class WheelView extends View implements IWheelViewSetting {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     isScrolling = false;
+                    //Cancel animation forwardly.
                     if (isAnimatorCanceledForwardly) {
-                        Log.i(TAG, "onAnimationEnd: Cancel animation forwardly.");
                         isAnimatorCanceledForwardly = false;
                         return;
                     }
@@ -515,34 +555,36 @@ public class WheelView extends View implements IWheelViewSetting {
         return totalMoveY;
     }
 
-    public void setTotalMoveY(int totalMoveY) {
+    private void updateByTotalMoveY(int totalMoveY, int direction) {
         this.totalMoveY = totalMoveY;
-        updateByTotalMoveY();
-    }
-
-    private void updateByTotalMoveY() {
-        Pair<Integer, Integer> pair = calculateSelectedIndex(totalMoveY);
+        Pair<Integer, Integer> pair = calculateSelectedIndex(totalMoveY, direction);
         this.selectedIndex = pair.first;
         this.offsetY = pair.second;
         invalidate();
     }
 
-    private Pair<Integer, Integer> calculateSelectedIndex(int totalMoveY) {
-        int selectedIndex;
-        int offsetY;
-        if (totalMoveY > 0) {
-            selectedIndex = 0;
-            offsetY = totalMoveY;
-        } else {
-            selectedIndex = -totalMoveY / itemHeight;
-            if (selectedIndex >= getItemCount()) {
-                selectedIndex = getItemCount() - 1;
-            }
-            offsetY = totalMoveY + selectedIndex * itemHeight;
+    private Pair<Integer, Integer> calculateSelectedIndex(int totalMoveY, int direction) {
+        int selectedIndex = totalMoveY / (0 - itemHeight);
+        int rest = totalMoveY % (0 - itemHeight);
+        //move up
+        if (direction < 0 && Math.abs(rest) >= itemHeight / 4) {
+            selectedIndex++;
         }
+        //move down
+//        if (direction > 0 && Math.abs(rest) >= itemHeight * 3 / 4) {
+//            selectedIndex--;
+//        }
+
+        selectedIndex = Math.max(selectedIndex, 0);
+        selectedIndex = Math.min(selectedIndex, getItemCount() - 1);
+        int offsetY = (0 - selectedIndex * itemHeight) - totalMoveY;
         return new Pair<>(selectedIndex, offsetY);
     }
 
+    @Override
+    public void computeScroll() {
+
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -557,10 +599,11 @@ public class WheelView extends View implements IWheelViewSetting {
             rect.left = 0;
             rect.right = getWidth();
             if (tempStartSelectedIndex >= 0 && tempStartSelectedIndex < getItemCount()) {
-                drawItem(canvas, rect, getItemAt(tempStartSelectedIndex), offsetY, textPaint);
+                drawItem(canvas, rect, getItemAt(tempStartSelectedIndex), -offsetY, textPaint);
             }
             tempStartSelectedIndex++;
         }
+        computeScroll();
     }
 
     private void drawItem(Canvas canvas, Rect rect, IWheel item, int offsetY, TextPaint textPaint) {
@@ -591,7 +634,7 @@ public class WheelView extends View implements IWheelViewSetting {
         float baseLine = centerY + textBaseLine;
         matrix.reset();
         camera.save();
-        camera.rotateX(calRotationX(rect, totalOffsetX == 0 ? 45 : 75));
+        camera.rotateX(calRotationX(rect, wheelRotationX));
         camera.getMatrix(matrix);
         camera.restore();
         matrix.preTranslate(-centerX, -centerY);
@@ -626,13 +669,6 @@ public class WheelView extends View implements IWheelViewSetting {
         return baseRotationX * distance * 1.0f / totalDistance;
     }
 
-    private float calScaleY(Rect rect) {
-        int centerY = getHeight() / 2;
-        int distance = Math.abs(centerY - rect.centerY());
-        int totalDistance = itemHeight * (showCount / 2);
-        distance = totalDistance - distance;
-        return 1 + 0.4f * distance / totalDistance;
-    }
     private float calSkewX(Rect rect) {
         int centerY = getHeight() / 2;
         int distance = centerY - rect.centerY();
