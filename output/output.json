@@ -6,13 +6,13 @@
     "apkInfo": {
       "type": "MAIN",
       "splits": [],
-      "versionCode": 5,
-      "versionName": "0.3.0",
+      "versionCode": 6,
+      "versionName": "0.4.0",
       "enabled": true,
       "outputFile": "WheelDemo.apk",
       "fullName": "release",
       "baseName": "release",
-      "content": "\n1、optimize WheelView\n2、optimize ColumnWheelDialog\n3、optimize DateTimeWheelDialog"
+      "content": "\n1、optimize WheelView\n2、add attribution for WheelView:wheelRotationX - 3D rotation"
     },
     "path": "WheelDemo.apk",
     "properties": {}
