@@ -32,25 +32,25 @@ compile 'jsc.kit.wheel:wheel-view:_latestVersion'
 
 | 名称 | 类型 | 描述 |
 |:---|:---|:---|
-|wheelTextColor|color|选中item字体颜色|
-|wheelTextSize|dimension|字体大小|
-|wheelShowCount|integer|显示item条数，与`wheelItemVerticalSpace`决定了控件的高度|
-|wheelTotalOffsetX|dimension|X轴方向总弯曲度，决定弧形效果|
-|wheelItemVerticalSpace|dimension|两个item直接的间距，与`wheelShowCount`决定了控件的高度|
-|wheelRotationX|integer|已X轴为轴心旋转角度，决定3D效果|
+|`wheelTextColor`|color|选中item字体颜色|
+|`wheelTextSize`|dimension|字体大小|
+|`wheelShowCount`|integer|显示item条数，与`wheelItemVerticalSpace`决定了控件的高度|
+|`wheelTotalOffsetX`|dimension|X轴方向总弯曲度，决定弧形效果|
+|`wheelItemVerticalSpace`|dimension|两个item直接的间距，与`wheelShowCount`决定了控件的高度|
+|`wheelRotationX`|integer|已X轴为轴心旋转角度，决定3D效果|
 
 + 2.2、[WheelMaskView](/wheelLibrary/src/main/java/jsc/kit/wheel/base/WheelMaskView.java)
 
 | 名称 | 类型 | 描述 |
 |:---|:---|:---|
-|wheelMaskLineColor|color|中间选中item的两条分割线颜色|
+|`wheelMaskLineColor`|color|中间选中item的两条分割线颜色|
 
 + 2.3、[WheelItemView](/wheelLibrary/src/main/java/jsc/kit/wheel/base/WheelItemView.java)
 
 | 子View | 类型 | 属性 |
 |:---|:---|:---|
-|wheelView|[WheelView](/wheelLibrary/src/main/java/jsc/kit/wheel/base/WheelView.java)|[WheelView](/wheelLibrary/src/main/java/jsc/kit/wheel/base/WheelView.java)所有属性|
-|wheelMaskView|[WheelMaskView](/wheelLibrary/src/main/java/jsc/kit/wheel/base/WheelMaskView.java)|[WheelMaskView](/wheelLibrary/src/main/java/jsc/kit/wheel/base/WheelMaskView.java)所有属性|
+|`wheelView`|[WheelView](/wheelLibrary/src/main/java/jsc/kit/wheel/base/WheelView.java)|[WheelView](/wheelLibrary/src/main/java/jsc/kit/wheel/base/WheelView.java)所有属性|
+|`wheelMaskView`|[WheelMaskView](/wheelLibrary/src/main/java/jsc/kit/wheel/base/WheelMaskView.java)|[WheelMaskView](/wheelLibrary/src/main/java/jsc/kit/wheel/base/WheelMaskView.java)所有属性|
 
 ### 3、usage
 | 组件 | 使用示例 |
