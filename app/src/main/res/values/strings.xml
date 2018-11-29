@@ -2,6 +2,6 @@
     <string name="app_name">WheelView</string>
     <string name="app_update_content">
         当前版本更新内容:
-        \n1、fix WheelView slide bug
+        \n1、fix a bug
     </string>
 </resources>

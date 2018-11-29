@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,10 +24,13 @@ import org.json.JSONObject;
 
 import java.util.Locale;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import jsc.exam.com.wheelview.BuildConfig;
 import jsc.exam.com.wheelview.R;
@@ -125,7 +129,7 @@ public class AboutFragment extends Fragment {
                         "当前版本:\u2000%1s\n"
                                 + "最新版本:\u2000%2s\n\n"
                                 + "更新内容:\n%3s"
-                                + "\n立即更新？",
+                                + "\n\n立即更新？",
                         curVersionName,
                         versionName,
                         content

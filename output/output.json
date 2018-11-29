@@ -6,13 +6,13 @@
     "apkInfo": {
       "type": "MAIN",
       "splits": [],
-      "versionCode": 7,
-      "versionName": "0.4.1",
+      "versionCode": 8,
+      "versionName": "0.4.2",
       "enabled": true,
       "outputFile": "WheelDemo.apk",
       "fullName": "release",
       "baseName": "release",
-      "content": "\n1、fix WheelView slide bug"
+      "content": "\n1、fix a bug"
     },
     "path": "WheelDemo.apk",
     "properties": {}
