@@ -2,7 +2,6 @@
     <string name="app_name">WheelView</string>
     <string name="app_update_content">
         当前版本更新内容:
-        \n1、optimize WheelView
-        \n2、add attribution for WheelView:wheelRotationX - 3D rotation
+        \n1、fix WheelView slide bug
     </string>
 </resources>

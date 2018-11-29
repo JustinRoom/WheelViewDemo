@@ -6,13 +6,13 @@
     "apkInfo": {
       "type": "MAIN",
       "splits": [],
-      "versionCode": 6,
-      "versionName": "0.4.0",
+      "versionCode": 7,
+      "versionName": "0.4.1",
       "enabled": true,
       "outputFile": "WheelDemo.apk",
       "fullName": "release",
       "baseName": "release",
-      "content": "\n1、optimize WheelView\n2、add attribution for WheelView:wheelRotationX - 3D rotation"
+      "content": "\n1、fix WheelView slide bug"
     },
     "path": "WheelDemo.apk",
     "properties": {}
