@@ -262,10 +262,9 @@ public class WheelView extends View implements IWheelViewSetting {
                 int direction = 0;
                 if (distance == 0)
                     break;
-                //more than the minimum distance, cancel click event
-                if (Math.abs(distance) >= scaledTouchSlop) {
-                    touchDownTimeStamp = 0;
-                }
+
+                //if moved, cancel click event
+                touchDownTimeStamp = 0;
                 direction = distance / Math.abs(distance);
 
                 //initialize touch area
@@ -277,38 +276,25 @@ public class WheelView extends View implements IWheelViewSetting {
                     lastY = currentY;
                     totalMoveY += distance;
                     updateByTotalMoveY(totalMoveY, direction);
-                } else {
-                    //out of touch area, cancel click event
-                    touchDownTimeStamp = 0;
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                if (System.currentTimeMillis() - touchDownTimeStamp <= CLICK_EVENT_INTERNAL_TIME) {
+                    //it's a click event, do it
+                    executeClickEvent(event.getX(), event.getY());
+                    break;
+                }
+
                 //calculate current velocity
                 final VelocityTracker velocityTracker = mVelocityTracker;
                 velocityTracker.computeCurrentVelocity(100, mMaximumVelocity);
                 float currentVelocity = velocityTracker.getYVelocity();
                 recycleVelocityTracker();
 
-                //if the current velocity is 0
-                if (Math.abs(currentVelocity) <= scaledTouchSlop) {
-                    if (System.currentTimeMillis() - touchDownTimeStamp <= CLICK_EVENT_INTERNAL_TIME) {
-                        //it's a click event, do it
-                        executeClickEvent(event.getX(), event.getY());
-                    } else {
-                        //do rebound animation
-                        runAutoScrollAnimation(
-                                null,
-                                totalMoveY,
-                                0 - selectedIndex * itemHeight
-                        );
-                    }
-                    break;
-                }
-
-                //it's a fling event.
                 int extraDistance = (int) currentVelocity;
-                if (Math.abs(extraDistance) > 0) {
+                if (Math.abs(extraDistance) >= scaledTouchSlop) {
+                    //it's a fling event.
                     int tempTotalMoveY = totalMoveY + extraDistance;
                     //limit fling area
                     tempTotalMoveY = Math.max(tempTotalMoveY, -(getItemCount() + showCount / 2) * itemHeight);
