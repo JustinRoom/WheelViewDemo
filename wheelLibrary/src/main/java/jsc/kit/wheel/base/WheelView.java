@@ -383,6 +383,7 @@ public class WheelView extends View implements IWheelViewSetting {
         if (withAnimation) {
             runAutoScrollAnimation(null, totalMoveY, 0 - itemHeight * targetIndexPosition);
         } else {
+            totalMoveY = 0 - itemHeight * targetIndexPosition;
             selectedIndex = targetIndexPosition;
             offsetY = 0;
             invalidate();
