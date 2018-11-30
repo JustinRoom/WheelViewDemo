@@ -228,7 +228,6 @@ public class WheelView extends View implements IWheelViewSetting {
      * Set the fling velocity units.
      * The default value is {@link #DEFAULT_VELOCITY_UNITS}.
      * @param velocityUnits the velocity units
-     * @see android.view.VelocityTracker#computeCurrentVelocity(int, float)
      */
     public void setVelocityUnits(int velocityUnits) {
         this.velocityUnits = Math.abs(velocityUnits);
