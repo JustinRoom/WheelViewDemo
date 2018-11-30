@@ -6,7 +6,8 @@
         <attr name="wheelShowCount" format="integer"/>
         <attr name="wheelTotalOffsetX" format="dimension"/>
         <attr name="wheelItemVerticalSpace" format="dimension"/>
-        <attr name="wheelRotationX" format="integer"/>
+        <attr name="wheelRotationX" format="float"/>
+        <attr name="wheelVelocityUnits" format="integer"/>
     </declare-styleable>
 
     <declare-styleable name="WheelMaskView">

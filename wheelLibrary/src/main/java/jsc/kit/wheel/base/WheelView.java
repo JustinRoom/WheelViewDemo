@@ -15,13 +15,11 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.OverScroller;
 
@@ -47,7 +45,8 @@ import jsc.kit.wheel.R;
 public class WheelView extends View implements IWheelViewSetting {
 
     private final String TAG = "WheelView";
-    private static final float DEFAULT_ROTATION_X = 45;
+    private static final float DEFAULT_ROTATION_X = 45.0f;
+    private static final int DEFAULT_VELOCITY_UNITS = 600;
     private TextPaint textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
     private Camera camera = new Camera();
     private Matrix matrix = new Matrix();
@@ -88,6 +87,7 @@ public class WheelView extends View implements IWheelViewSetting {
     private int offsetY = 0;
     private int totalMoveY = 0;//
     private float wheelRotationX = 0;
+    private int velocityUnits = 0;
 
     /**
      * the space width of two items
@@ -99,6 +99,7 @@ public class WheelView extends View implements IWheelViewSetting {
     private int itemHeight = 0;
     private float lastX = 0.0f;
     private float lastY = 0.0f;
+    private int[] calculateResult = new int[2];//for saving the calculate result.
     private int selectedIndex = 0;//the selected index position
     private OnSelectedListener onSelectedListener = null;
     private ValueAnimator animator = null;
@@ -115,6 +116,7 @@ public class WheelView extends View implements IWheelViewSetting {
     private int scaledTouchSlop;
     private VelocityTracker mVelocityTracker = null;
     private OverScroller mOverScroller;
+    private int flingDirection = 0;//-1向上、1向下
 
     public WheelView(Context context) {
         super(context);
@@ -146,6 +148,10 @@ public class WheelView extends View implements IWheelViewSetting {
         totalOffsetX = a.getDimensionPixelSize(R.styleable.WheelView_wheelTotalOffsetX, 0);
         itemVerticalSpace = a.getDimensionPixelSize(R.styleable.WheelView_wheelItemVerticalSpace, 32);
         wheelRotationX = a.getFloat(R.styleable.WheelView_wheelRotationX, DEFAULT_ROTATION_X);
+        velocityUnits = a.getInteger(R.styleable.WheelView_wheelRotationX, DEFAULT_VELOCITY_UNITS);
+        if (velocityUnits < 0) {
+            velocityUnits = Math.abs(velocityUnits);
+        }
         a.recycle();
 
         initConfig();
@@ -218,6 +224,16 @@ public class WheelView extends View implements IWheelViewSetting {
         requestLayout();
     }
 
+    /**
+     * Set the fling velocity units.
+     * The default value is {@link #DEFAULT_VELOCITY_UNITS}.
+     * @param velocityUnits the velocity units
+     * @see VelocityTracker#computeCurrentVelocity(int, float)
+     */
+    public void setVelocityUnits(int velocityUnits) {
+        this.velocityUnits = Math.abs(velocityUnits);
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int top = 0 - itemHeight;
@@ -239,6 +255,10 @@ public class WheelView extends View implements IWheelViewSetting {
             case MotionEvent.ACTION_DOWN:
                 //add event into velocity tracker.
                 mVelocityTracker.clear();
+
+                //stop fling and reset fling direction
+                flingDirection = 0;
+                mOverScroller.forceFinished(true);
 
                 if (animator != null && animator.isRunning()) {
                     isAnimatorCanceledForwardly = true;
@@ -270,12 +290,10 @@ public class WheelView extends View implements IWheelViewSetting {
                 //initialize touch area
                 rectF.set(0, 0, getWidth(), getHeight());
                 if (rectF.contains(currentX, currentY)) {
-
                     //inside touch area, execute move event.
                     lastX = currentX;
                     lastY = currentY;
-                    totalMoveY += distance;
-                    updateByTotalMoveY(totalMoveY, direction);
+                    updateByTotalMoveY(totalMoveY + distance, direction);
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -288,29 +306,28 @@ public class WheelView extends View implements IWheelViewSetting {
 
                 //calculate current velocity
                 final VelocityTracker velocityTracker = mVelocityTracker;
-                velocityTracker.computeCurrentVelocity(100, mMaximumVelocity);
+                velocityTracker.computeCurrentVelocity(velocityUnits, mMaximumVelocity);
                 float currentVelocity = velocityTracker.getYVelocity();
                 recycleVelocityTracker();
 
-                int extraDistance = (int) currentVelocity;
-                if (Math.abs(extraDistance) >= scaledTouchSlop) {
+                final int tempFlingDirection = currentVelocity == 0 ? 0 : (currentVelocity < 0 ? -1 : 1);
+                if (Math.abs(currentVelocity) >= mMinimumVelocity) {
                     //it's a fling event.
-                    int tempTotalMoveY = totalMoveY + extraDistance;
-                    //limit fling area
-                    tempTotalMoveY = Math.max(tempTotalMoveY, -(getItemCount() + showCount / 2) * itemHeight);
-                    tempTotalMoveY = Math.min(tempTotalMoveY, (showCount / 2) * itemHeight);
-                    Pair<Integer, Integer> pair = calculateSelectedIndex(tempTotalMoveY, extraDistance / Math.abs(extraDistance));
-                    int tempSelectedIndex = pair.first;
-                    runAutoScrollAnimation(
-                            null,
-                            totalMoveY,
-                            tempTotalMoveY,
-                            0 - tempSelectedIndex * itemHeight
+                    flingDirection = tempFlingDirection;
+                    mOverScroller.fling(
+                            0, totalMoveY,
+                            0, (int) currentVelocity,
+                            0, 0,
+                            -(getItemCount() + showCount / 2) * itemHeight, (showCount / 2) * itemHeight,
+                            0, 0
                     );
+                    invalidate();
                 } else {
-                    //do rebound animation
-                    runAutoScrollAnimation(
-                            null,
+                    calculateSelectedIndex(totalMoveY, tempFlingDirection);
+                    selectedIndex = calculateResult[0];
+                    offsetY = calculateResult[1];
+                    //execute rebound animation
+                    executeAnimation(
                             totalMoveY,
                             0 - selectedIndex * itemHeight
                     );
@@ -381,7 +398,7 @@ public class WheelView extends View implements IWheelViewSetting {
         if (targetIndexPosition < 0 || targetIndexPosition >= getItemCount())
             throw new IndexOutOfBoundsException("Out of array bounds.");
         if (withAnimation) {
-            runAutoScrollAnimation(null, totalMoveY, 0 - itemHeight * targetIndexPosition);
+            executeAnimation(totalMoveY, 0 - itemHeight * targetIndexPosition);
         } else {
             totalMoveY = 0 - itemHeight * targetIndexPosition;
             selectedIndex = targetIndexPosition;
@@ -453,10 +470,11 @@ public class WheelView extends View implements IWheelViewSetting {
     }
 
     /**
-     * Execute auto-scroll animation.
+     * Execute animation.
      */
-    private void runAutoScrollAnimation(@Nullable Interpolator interpolator, int... values) {
-        if (values.length < 2) {
+    private void executeAnimation(int... values) {
+        //if it's invalid animation, call back immediately.
+        if (invalidAnimation(values)) {
             if (onSelectedListener != null)
                 onSelectedListener.onSelected(getContext(), selectedIndex);
             return;
@@ -477,10 +495,20 @@ public class WheelView extends View implements IWheelViewSetting {
             isAnimatorCanceledForwardly = true;
             animator.cancel();
         }
-        animator.setInterpolator(interpolator == null ? new LinearInterpolator() : interpolator);
         animator.setIntValues(values);
         animator.setDuration(calSuitableDuration(duration));
         animator.start();
+    }
+
+    private boolean invalidAnimation(int... values) {
+        if (values == null || values.length < 2)
+            return true;
+        int firstValue = values[0];
+        for (int value : values) {
+            if (firstValue != value)
+                return false;
+        }
+        return true;
     }
 
     private int calSuitableDuration(int duration) {
@@ -542,35 +570,58 @@ public class WheelView extends View implements IWheelViewSetting {
         return totalMoveY;
     }
 
-    private void updateByTotalMoveY(int totalMoveY, int direction) {
+    private void updateByTotalMoveY(final int totalMoveY, int direction) {
+        calculateSelectedIndex(totalMoveY, direction);
         this.totalMoveY = totalMoveY;
-        Pair<Integer, Integer> pair = calculateSelectedIndex(totalMoveY, direction);
-        this.selectedIndex = pair.first;
-        this.offsetY = pair.second;
+        this.selectedIndex = calculateResult[0];
+        this.offsetY = calculateResult[1];
         invalidate();
     }
 
-    private Pair<Integer, Integer> calculateSelectedIndex(int totalMoveY, int direction) {
+    private void calculateSelectedIndex(int totalMoveY, int direction) {
         int selectedIndex = totalMoveY / (0 - itemHeight);
         int rest = totalMoveY % (0 - itemHeight);
+        if (direction > 0 && rest != 0) {
+            selectedIndex ++;
+            rest = itemHeight - Math.abs(rest);
+        }
         //move up
         if (direction < 0 && Math.abs(rest) >= itemHeight / 4) {
             selectedIndex++;
         }
         //move down
-//        if (direction > 0 && Math.abs(rest) >= itemHeight * 3 / 4) {
-//            selectedIndex--;
-//        }
+        if (direction > 0 && Math.abs(rest) >= itemHeight / 4) {
+            selectedIndex --;
+        }
 
         selectedIndex = Math.max(selectedIndex, 0);
         selectedIndex = Math.min(selectedIndex, getItemCount() - 1);
         int offsetY = (0 - selectedIndex * itemHeight) - totalMoveY;
-        return new Pair<>(selectedIndex, offsetY);
+        calculateResult[0] = selectedIndex;
+        calculateResult[1] = offsetY;
     }
 
     @Override
     public void computeScroll() {
+        if (mOverScroller.computeScrollOffset()) {
+            totalMoveY = mOverScroller.getCurrY();
+            updateByTotalMoveY(totalMoveY, 0);
+            invalidate();
+            return;
+        }
 
+        if (flingDirection != 0) {
+            final int flingDirectionCopy = flingDirection;
+            flingDirection = 0;
+            calculateSelectedIndex(totalMoveY, flingDirectionCopy);
+            selectedIndex = calculateResult[0];
+            offsetY = calculateResult[1];
+            //execute rebound animation
+            executeAnimation(
+                    totalMoveY,
+                    0 - selectedIndex * itemHeight
+            );
+        }
     }
 
     @Override
