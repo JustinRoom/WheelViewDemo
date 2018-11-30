@@ -81,6 +81,13 @@ compile 'jsc.kit.wheel:wheel-view:_latestVersion'
 ![OneColumnWheelDialog](/output/shots/date_time_wheel04.png)
 ![OneColumnWheelDialog](/output/shots/date_time_wheel05.png)
 
+### 5、release log
+
+##### version:0.5.0
+\n1、optimize WheelView  
+\n2、change wheelRotationX(attribution) to float  
+\n3、add wheelVelocityUnits(attribution)  
+
 ### LICENSE
 ```
    Copyright 2018 JustinRoom
