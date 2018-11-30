@@ -84,9 +84,9 @@ compile 'jsc.kit.wheel:wheel-view:_latestVersion'
 ### 5、release log
 
 ##### version:0.5.0
-\n1、optimize WheelView  
-\n2、change wheelRotationX(attribution) to float  
-\n3、add wheelVelocityUnits(attribution)  
+1、optimize WheelView  
+2、change wheelRotationX(attribution) to float  
+3、add wheelVelocityUnits(attribution)  
 
 ### LICENSE
 ```
