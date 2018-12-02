@@ -85,8 +85,8 @@ compile 'jsc.kit.wheel:wheel-view:_latestVersion'
 
 ##### version:0.5.0
 + optimize [WheelMaskView](/wheelLibrary/src/main/java/jsc/kit/wheel/base/WheelMaskView.java):  
-change `wheelRotationX`(attribution) to float  
-add `wheelVelocityUnits`(attribution)  
++ change `wheelRotationX`(attribution) to float  
++ add `wheelVelocityUnits`(attribution)  
 
 ### LICENSE
 ```
