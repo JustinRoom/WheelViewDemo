@@ -38,11 +38,11 @@
             android:textSize="14sp" />
 
         <TextView
+            android:id="@+id/tv_update_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_4"
             android:layout_marginBottom="@dimen/space_4"
-            android:text="@string/app_update_content"
             android:textColor="@color/colorAccent"
             android:textSize="14sp" />
 

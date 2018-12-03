@@ -1,6 +1,7 @@
 import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.application'
+def apkName = 'WheelDemo.apk'
 
 android {
     compileSdkVersion sdk_veriosn
@@ -14,6 +15,9 @@ android {
 
         buildConfigField("String", "BUILD_TIME", "\"${new SimpleDateFormat("yyyy年MM月dd日 HH:mm").format(new Date())}\"")
         buildConfigField("String", "BASE_URL", "\"https://raw.githubusercontent.com/\"")
+        buildConfigField("String", "VERSION_URL", "\"JustinRoom/${rootProject.name}/master/output/output.json\"")
+        buildConfigField("String", "DOWNLOAD_URL", "\"JustinRoom/${rootProject.name}/master/output/%s\"")
+        buildConfigField("String", "GITHUB_URL", "\"https://github.com/JustinRoom/${rootProject.name}\"")
     }
 
     signingConfigs {
@@ -43,7 +47,7 @@ android {
     }
     applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "WheelDemo.apk"
+            outputFileName = "${apkName}"
         }
     }
 }

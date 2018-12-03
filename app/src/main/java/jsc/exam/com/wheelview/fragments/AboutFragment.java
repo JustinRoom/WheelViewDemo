@@ -54,6 +54,7 @@ public class AboutFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_abount, container, false);
         TextView tvVersion = root.findViewById(R.id.tv_version);
+        TextView tvUpdateContent = root.findViewById(R.id.tv_update_content);
         TextView tvBuildTime = root.findViewById(R.id.tv_build_time);
         try {
             PackageInfo packageInfo = inflater.getContext().getPackageManager().getPackageInfo(inflater.getContext().getPackageName(), PackageManager.GET_GIDS);
@@ -70,6 +71,7 @@ public class AboutFragment extends Fragment {
                 checkUpdate();
             }
         });
+        tvUpdateContent.setText("当前版本更新内容:" + getString(R.string.app_update_content));
         return root;
     }
 
@@ -152,7 +154,7 @@ public class AboutFragment extends Fragment {
                 .setPositiveButton("更新", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String url = BuildConfig.BASE_URL + "JustinRoom/WheelViewDemo/master/output/%s";
+                        String url = BuildConfig.BASE_URL + BuildConfig.DOWNLOAD_URL;
                         Uri uri = Uri.parse(String.format(Locale.CHINA, url, fileName));
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         startActivity(intent);
