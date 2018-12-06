@@ -43,8 +43,10 @@ public class WheelItemView extends FrameLayout implements IWheelViewSetting {
     }
 
     private void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        wheelView = new WheelView(context, attrs, defStyleAttr);
-        wheelMaskView = new WheelMaskView(context, attrs, defStyleAttr);
+        wheelView = new WheelView(context);
+        wheelView.initAttr(context, attrs, defStyleAttr);
+        wheelMaskView = new WheelMaskView(context);
+        wheelMaskView.initAttr(context, attrs, defStyleAttr);
         addView(wheelView, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         addView(wheelMaskView, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }

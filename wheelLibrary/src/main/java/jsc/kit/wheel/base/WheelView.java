@@ -133,7 +133,7 @@ public class WheelView extends View implements IWheelViewSetting {
         initAttr(context, attrs, defStyleAttr);
     }
 
-    private void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public void initAttr(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         mOverScroller = new OverScroller(context);
         final ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
         mMinimumVelocity = viewConfiguration.getScaledMinimumFlingVelocity();
