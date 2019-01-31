@@ -53,6 +53,8 @@ public class ColumnWheelDialog<T0 extends IWheel, T1 extends IWheel, T2 extends 
     private OnClickCallBack<T0, T1, T2, T3, T4> okCallBack = null;
 
     private boolean isViewInitialized = false;
+    private float textSize;
+    private int itemVerticalSpace;
 
     public ColumnWheelDialog(@NonNull Context context) {
         this(context, R.style.WheelDialog);
@@ -88,6 +90,20 @@ public class ColumnWheelDialog<T0 extends IWheel, T1 extends IWheel, T2 extends 
         lyPickerContainer.addView(wheelItemView3, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         wheelItemView4 = new WheelItemView(lyPickerContainer.getContext());
         lyPickerContainer.addView(wheelItemView4, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+        if (textSize > 0) {
+            wheelItemView0.setTextSize(textSize);
+            wheelItemView1.setTextSize(textSize);
+            wheelItemView2.setTextSize(textSize);
+            wheelItemView3.setTextSize(textSize);
+            wheelItemView4.setTextSize(textSize);
+        }
+        if (itemVerticalSpace > 0) {
+            wheelItemView0.setItemVerticalSpace(itemVerticalSpace);
+            wheelItemView1.setItemVerticalSpace(itemVerticalSpace);
+            wheelItemView2.setItemVerticalSpace(itemVerticalSpace);
+            wheelItemView3.setItemVerticalSpace(itemVerticalSpace);
+            wheelItemView4.setItemVerticalSpace(itemVerticalSpace);
+        }
 
         tvTitle = findViewById(R.id.wheel_id_title_bar_title);
         tvCancel = findViewById(R.id.wheel_id_title_bar_cancel);
@@ -148,6 +164,14 @@ public class ColumnWheelDialog<T0 extends IWheel, T1 extends IWheel, T2 extends 
     public void setTitle(CharSequence title) {
         ensureIsViewInitialized();
         tvTitle.setText(title);
+    }
+
+    public void setTextSize(float textSize) {
+        this.textSize = textSize;
+    }
+
+    public void setItemVerticalSpace(int itemVerticalSpace) {
+        this.itemVerticalSpace = itemVerticalSpace;
     }
 
     public void setOKButton(CharSequence ok, OnClickCallBack<T0, T1, T2, T3, T4> okCallBack) {
