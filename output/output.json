@@ -3,16 +3,16 @@
     "outputType": {
       "type": "APK"
     },
-    "apkInfo": {
+    "apkData": {
       "type": "MAIN",
       "splits": [],
-      "versionCode": 10,
-      "versionName": "0.5.1",
+      "versionCode": 13,
+      "versionName": "0.5.4",
       "enabled": true,
       "outputFile": "WheelDemo.apk",
       "fullName": "release",
       "baseName": "release",
-      "content": "\n1、fix bugs"
+      "content": "\n1、update DateTimeWheelDialog component."
     },
     "path": "WheelDemo.apk",
     "properties": {}

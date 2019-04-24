@@ -82,6 +82,8 @@ public class DateTimeWheelDialog extends Dialog {
     private OnClickCallBack cancelCallBack = null;
     private OnClickCallBack okCallBack = null;
 
+    private int showCount = 5;
+    private int itemVerticalSpace = 32;
     private boolean isViewInitialized = false;
     private boolean keepLastSelected = false;
     private int showConfig = SHOW_YEAR_MONTH_DAY_HOUR_MINUTE;
@@ -112,18 +114,28 @@ public class DateTimeWheelDialog extends Dialog {
         LinearLayout lyPickerContainer = findViewById(R.id.wheel_id_picker_container);
         //year
         yearWheelItemView = new WheelItemView(lyPickerContainer.getContext());
+        yearWheelItemView.setItemVerticalSpace(itemVerticalSpace);
+        yearWheelItemView.setShowCount(showCount);
         lyPickerContainer.addView(yearWheelItemView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         //month
         monthWheelItemView = new WheelItemView(lyPickerContainer.getContext());
+        monthWheelItemView.setItemVerticalSpace(itemVerticalSpace);
+        monthWheelItemView.setShowCount(showCount);
         lyPickerContainer.addView(monthWheelItemView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         //day
         dayWheelItemView = new WheelItemView(lyPickerContainer.getContext());
+        dayWheelItemView.setItemVerticalSpace(itemVerticalSpace);
+        dayWheelItemView.setShowCount(showCount);
         lyPickerContainer.addView(dayWheelItemView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         //hour
         hourWheelItemView = new WheelItemView(lyPickerContainer.getContext());
+        hourWheelItemView.setItemVerticalSpace(itemVerticalSpace);
+        hourWheelItemView.setShowCount(showCount);
         lyPickerContainer.addView(hourWheelItemView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         //minute
         minuteWheelItemView = new WheelItemView(lyPickerContainer.getContext());
+        minuteWheelItemView.setItemVerticalSpace(itemVerticalSpace);
+        minuteWheelItemView.setShowCount(showCount);
         lyPickerContainer.addView(minuteWheelItemView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
         tvTitle = findViewById(R.id.wheel_id_title_bar_title);
@@ -162,6 +174,14 @@ public class DateTimeWheelDialog extends Dialog {
         if (getWindow() != null) {
             getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
+    }
+
+    public void setShowCount(int showCount) {
+        this.showCount = showCount;
+    }
+
+    public void setItemVerticalSpace(int itemVerticalSpace) {
+        this.itemVerticalSpace = itemVerticalSpace;
     }
 
     public void setClickTipsWhenIsScrolling(CharSequence clickTipsWhenIsScrolling) {

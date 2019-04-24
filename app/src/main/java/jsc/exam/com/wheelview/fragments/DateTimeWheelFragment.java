@@ -100,6 +100,8 @@ public class DateTimeWheelFragment extends Fragment {
         Date endDate = calendar.getTime();
 
         DateTimeWheelDialog dialog = new DateTimeWheelDialog(getActivity());
+//        dialog.setShowCount(7);
+//        dialog.setItemVerticalSpace(24);
         dialog.show();
         dialog.setTitle("选择时间");
         int config = DateTimeWheelDialog.SHOW_YEAR_MONTH_DAY_HOUR_MINUTE;
