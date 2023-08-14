@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +19,11 @@ import androidx.annotation.NonNull;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import jsc.kit.wheel.R;
 import jsc.kit.wheel.base.WheelItemView;
@@ -70,11 +74,11 @@ public class DateTimeWheelDialog extends Dialog {
     private WheelItemView mHourView;
     private WheelItemView mMinuteView;
 
-    private DateItem[] yearItems;
-    private DateItem[] monthItems;
-    private DateItem[] dayItems;
-    private DateItem[] hourItems;
-    private DateItem[] minuteItems;
+    private final List<DateItem> yearItems = new ArrayList<>();
+    private final List<DateItem> monthItems = new ArrayList<>();
+    private final List<DateItem> dayItems = new ArrayList<>();
+    private final List<DateItem> hourItems = new ArrayList<>();
+    private final List<DateItem> minuteItems = new ArrayList<>();
 
     private final Calendar startCalendar = Calendar.getInstance();
     private final Calendar endCalendar = Calendar.getInstance();
@@ -107,6 +111,7 @@ public class DateTimeWheelDialog extends Dialog {
         }
         setContentView(R.layout.wheel_dialog_base);
         initView();
+        initOnScrollListener();
     }
 
     private void initView() {
@@ -279,7 +284,6 @@ public class DateTimeWheelDialog extends Dialog {
             throw new IllegalArgumentException("selected date must be between start date and end date");
         selectedCalendar.setTime(selectedDate);
         initSelectedDate();
-        initOnScrollListener();
     }
 
     private void initAreaDate() {
@@ -290,24 +294,24 @@ public class DateTimeWheelDialog extends Dialog {
         int startHour = startCalendar.get(Calendar.HOUR_OF_DAY);
         int startMinute = startCalendar.get(Calendar.MINUTE);
 
-        yearItems = updateItems(DateItem.TYPE_YEAR, startYear, endYear);
-        monthItems = updateItems(DateItem.TYPE_MONTH, startMonth, MAX_MONTH);
+        updateItems(yearItems, DateItem.TYPE_YEAR, startYear, endYear);
+        updateItems(monthItems, DateItem.TYPE_MONTH, startMonth, MAX_MONTH);
         int dayActualMaximum = startCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        dayItems = updateItems(DateItem.TYPE_DAY, startDay, dayActualMaximum);
-        hourItems = updateItems(DateItem.TYPE_HOUR, startHour, MAX_HOUR);
-        minuteItems = updateItems(DateItem.TYPE_MINUTE, startMinute, MAX_MINUTE);
-        mYearView.setItems(yearItems);
-        mMonthView.setItems(monthItems);
-        mDayView.setItems(dayItems);
-        mHourView.setItems(hourItems);
-        mMinuteView.setItems(minuteItems);
+        updateItems(dayItems, DateItem.TYPE_DAY, startDay, dayActualMaximum);
+        updateItems(hourItems, DateItem.TYPE_HOUR, startHour, MAX_HOUR);
+        updateItems(minuteItems, DateItem.TYPE_MINUTE, startMinute, MAX_MINUTE);
+        mYearView.setItems(toArray(yearItems));
+        mMonthView.setItems(toArray(monthItems));
+        mDayView.setItems(toArray(dayItems));
+        mHourView.setItems(toArray(hourItems));
+        mMinuteView.setItems(toArray(minuteItems));
     }
 
     private void initOnScrollListener() {
         mYearView.setOnSelectedListener(new WheelView.OnSelectedListener() {
             @Override
             public void onSelected(Context context, int selectedIndex) {
-                selectedCalendar.set(Calendar.YEAR, yearItems[selectedIndex].getValue());
+                selectedCalendar.set(Calendar.YEAR, yearItems.get(selectedIndex).getValue());
                 if (showConfig > SHOW_YEAR)
                     onYearChanged();
             }
@@ -315,15 +319,22 @@ public class DateTimeWheelDialog extends Dialog {
         mMonthView.setOnSelectedListener(new WheelView.OnSelectedListener() {
             @Override
             public void onSelected(Context context, int selectedIndex) {
-                selectedCalendar.set(Calendar.MONTH, monthItems[selectedIndex].getValue() - 1);
+                int oldDayCount = getDayCount(selectedCalendar.get(Calendar.YEAR), selectedCalendar.get(Calendar.MONTH) + 1);
+                int month = monthItems.get(selectedIndex).getValue();
+                int newDayCount = getDayCount(selectedCalendar.get(Calendar.YEAR), month);
+                if (newDayCount < oldDayCount) {
+                    int oldSelectedDay = selectedCalendar.get(Calendar.DAY_OF_MONTH);
+                    selectedCalendar.set(Calendar.DAY_OF_MONTH, Math.min(newDayCount, oldSelectedDay));
+                }
+                selectedCalendar.set(Calendar.MONTH, month - 1);
                 if (showConfig > SHOW_YEAR_MONTH)
-                    onMonthChanged();
+                onMonthChanged();
             }
         });
         mDayView.setOnSelectedListener(new WheelView.OnSelectedListener() {
             @Override
             public void onSelected(Context context, int selectedIndex) {
-                selectedCalendar.set(Calendar.DAY_OF_MONTH, dayItems[selectedIndex].getValue());
+                selectedCalendar.set(Calendar.DAY_OF_MONTH, dayItems.get(selectedIndex).getValue());
                 if (showConfig > SHOW_YEAR_MONTH_DAY)
                     onDayChanged();
             }
@@ -331,7 +342,7 @@ public class DateTimeWheelDialog extends Dialog {
         mHourView.setOnSelectedListener(new WheelView.OnSelectedListener() {
             @Override
             public void onSelected(Context context, int selectedIndex) {
-                selectedCalendar.set(Calendar.HOUR_OF_DAY, hourItems[selectedIndex].getValue());
+                selectedCalendar.set(Calendar.HOUR_OF_DAY, hourItems.get(selectedIndex).getValue());
                 if (showConfig > SHOW_YEAR_MONTH_DAY_HOUR)
                     onHourChanged();
             }
@@ -339,7 +350,7 @@ public class DateTimeWheelDialog extends Dialog {
         mMinuteView.setOnSelectedListener(new WheelView.OnSelectedListener() {
             @Override
             public void onSelected(Context context, int selectedIndex) {
-                selectedCalendar.set(Calendar.MINUTE, minuteItems[selectedIndex].getValue());
+                selectedCalendar.set(Calendar.MINUTE, minuteItems.get(selectedIndex).getValue());
             }
         });
     }
@@ -383,16 +394,16 @@ public class DateTimeWheelDialog extends Dialog {
             startValue = MIN_MONTH;
             endValue = MAX_MONTH;
         }
-        monthItems = new DateItem[endValue - startValue + 1];
+        monthItems.clear();
         for (int i = startValue; i <= endValue; i++) {
             tempIndex++;
-            monthItems[tempIndex] = new DateItem(DateItem.TYPE_MONTH, i);
+            monthItems.add(new DateItem(DateItem.TYPE_MONTH, i));
             if (isSameValue(selectedMonth, i)) {
                 lastSelectedIndex = tempIndex;
             }
         }
         int newSelectedIndex = keepLastSelected ? (lastSelectedIndex == -1 ? 0 : lastSelectedIndex) : 0;
-        mMonthView.setItems(monthItems);
+        mMonthView.setItems(toArray(monthItems));
         mMonthView.setSelectedIndex(newSelectedIndex);
     }
 
@@ -412,25 +423,53 @@ public class DateTimeWheelDialog extends Dialog {
         int startValue, endValue;
         if (isSameValue(selectedYear, startYear) && isSameValue(selectedMonth, startMonth)) {
             startValue = startDay;
-            endValue = selectedCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+            endValue = getDayCount(selectedYear, selectedMonth);
         } else if (isSameValue(selectedYear, endYear) && isSameValue(selectedMonth, endMonth)) {
             startValue = MIN_DAY;
             endValue = endDay;
         } else {
             startValue = MIN_DAY;
-            endValue = selectedCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+            endValue = getDayCount(selectedYear, selectedMonth);
         }
-        dayItems = new DateItem[endValue - startValue + 1];
+        dayItems.clear();
         for (int i = startValue; i <= endValue; i++) {
             tempIndex++;
-            dayItems[tempIndex] = new DateItem(DateItem.TYPE_DAY, i);
+            dayItems.add(new DateItem(DateItem.TYPE_DAY, i));
             if (isSameValue(selectedDay, i)) {
                 lastSelectedIndex = tempIndex;
             }
         }
         int newSelectedIndex = keepLastSelected ? (lastSelectedIndex == -1 ? 0 : lastSelectedIndex) : 0;
-        mDayView.setItems(dayItems);
-        mDayView.setSelectedIndex(newSelectedIndex);
+        mDayView.setItems(toArray(dayItems));
+        mDayView.setSelectedIndex(newSelectedIndex, false);
+    }
+
+    private int getDayCount(int year, int month) {
+        int day = 0;
+        if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) {
+            day = 29;
+        } else {
+            day = 28;
+        }
+        switch (month) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                return 31;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                return 30;
+            case 2:
+                return day;
+
+        }
+        return 0;
     }
 
     private void onDayChanged() {
@@ -460,16 +499,16 @@ public class DateTimeWheelDialog extends Dialog {
             startValue = MIN_HOUR;
             endValue = MAX_HOUR;
         }
-        hourItems = new DateItem[endValue - startValue + 1];
+        hourItems.clear();
         for (int i = startValue; i <= endValue; i++) {
             tempIndex++;
-            hourItems[tempIndex] = new DateItem(DateItem.TYPE_HOUR, i);
+            hourItems.add(new DateItem(DateItem.TYPE_HOUR, i));
             if (isSameValue(selectedHour, i)) {
                 lastSelectedIndex = tempIndex;
             }
         }
         int newSelectedIndex = keepLastSelected ? (lastSelectedIndex == -1 ? 0 : lastSelectedIndex) : 0;
-        mHourView.setItems(hourItems);
+        mHourView.setItems(toArray(hourItems));
         mHourView.setSelectedIndex(newSelectedIndex);
     }
 
@@ -503,23 +542,23 @@ public class DateTimeWheelDialog extends Dialog {
             startValue = MIN_MINUTE;
             endValue = MAX_MINUTE;
         }
-        minuteItems = new DateItem[endValue - startValue + 1];
+        minuteItems.clear();
         for (int i = startValue; i <= endValue; i++) {
             tempIndex++;
-            minuteItems[tempIndex] = new DateItem(DateItem.TYPE_MINUTE, i);
+            minuteItems.add(new DateItem(DateItem.TYPE_MINUTE, i));
             if (isSameValue(selectedMinute, i)) {
                 lastSelectedIndex = tempIndex;
             }
         }
         int newSelectedIndex = keepLastSelected ? (lastSelectedIndex == -1 ? 0 : lastSelectedIndex) : 0;
-        mMinuteView.setItems(minuteItems);
+        mMinuteView.setItems(toArray(minuteItems));
         mMinuteView.setSelectedIndex(newSelectedIndex);
     }
 
-    private int findSelectedIndexByValue(DateItem[] items, int value) {
+    private int findSelectedIndexByValue(List<DateItem> items, int value) {
         int selectedIndex = 0;
-        for (int i = 0; i < items.length; i++) {
-            if (isSameValue(value, items[i].getValue())) {
+        for (int i = 0; i < items.size(); i++) {
+            if (isSameValue(value, items.get(i).getValue())) {
                 selectedIndex = i;
                 break;
             }
@@ -527,14 +566,11 @@ public class DateTimeWheelDialog extends Dialog {
         return selectedIndex;
     }
 
-    private DateItem[] updateItems(@DateItem.DateType int type, int startValue, int endValue) {
-        int index = -1;
-        DateItem[] items = new DateItem[endValue - startValue + 1];
+    private void updateItems(@NonNull List<DateItem> list, @DateItem.DateType int type, int startValue, int endValue) {
+        list.clear();
         for (int i = startValue; i <= endValue; i++) {
-            index++;
-            items[index] = new DateItem(type, i);
+            list.add(new DateItem(type, i));
         }
-        return items;
     }
 
     private boolean isScrolling() {
@@ -563,6 +599,12 @@ public class DateTimeWheelDialog extends Dialog {
 
     private boolean isSameValue(int value1, int value2) {
         return value1 == value2;
+    }
+
+    private DateItem[] toArray(List<DateItem> items) {
+        DateItem[] result = new DateItem[items.size()];
+        items.toArray(result);
+        return result;
     }
 
     private void ensureIsViewInitialized() {
