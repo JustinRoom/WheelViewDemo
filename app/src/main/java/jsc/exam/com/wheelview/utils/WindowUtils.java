@@ -5,8 +5,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.util.TypedValue;
+
+import androidx.annotation.NonNull;
 
 /**
  * <br>Email:1006368252@qq.com

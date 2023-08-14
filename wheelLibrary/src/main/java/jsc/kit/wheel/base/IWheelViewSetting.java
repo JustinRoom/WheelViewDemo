@@ -1,6 +1,6 @@
 package jsc.kit.wheel.base;
 
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 
 /**
  * <br>Email:1006368252@qq.com

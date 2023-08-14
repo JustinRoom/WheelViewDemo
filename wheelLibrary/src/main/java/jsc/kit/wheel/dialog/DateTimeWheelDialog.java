@@ -4,8 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -14,6 +12,9 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -51,7 +52,6 @@ public class DateTimeWheelDialog extends Dialog {
     public @interface ShowConfig {
     }
 
-    private final String TAG = "DateTimeWheelDialog";
     private final int MIN_MONTH = 1;
     private final int MAX_MONTH = 12;
     private final int MIN_DAY = 1;
@@ -64,11 +64,11 @@ public class DateTimeWheelDialog extends Dialog {
     private TextView tvOK;
     private CharSequence clickTipsWhenIsScrolling = "Scrolling, wait a minute.";
 
-    private WheelItemView yearWheelItemView;
-    private WheelItemView monthWheelItemView;
-    private WheelItemView dayWheelItemView;
-    private WheelItemView hourWheelItemView;
-    private WheelItemView minuteWheelItemView;
+    private WheelItemView mYearView;
+    private WheelItemView mMonthView;
+    private WheelItemView mDayView;
+    private WheelItemView mHourView;
+    private WheelItemView mMinuteView;
 
     private DateItem[] yearItems;
     private DateItem[] monthItems;
@@ -76,9 +76,9 @@ public class DateTimeWheelDialog extends Dialog {
     private DateItem[] hourItems;
     private DateItem[] minuteItems;
 
-    private Calendar startCalendar = Calendar.getInstance();
-    private Calendar endCalendar = Calendar.getInstance();
-    private Calendar selectedCalendar = Calendar.getInstance();
+    private final Calendar startCalendar = Calendar.getInstance();
+    private final Calendar endCalendar = Calendar.getInstance();
+    private final Calendar selectedCalendar = Calendar.getInstance();
     private OnClickCallBack cancelCallBack = null;
     private OnClickCallBack okCallBack = null;
 
@@ -111,32 +111,32 @@ public class DateTimeWheelDialog extends Dialog {
 
     private void initView() {
         isViewInitialized = true;
-        LinearLayout lyPickerContainer = findViewById(R.id.wheel_id_picker_container);
+        LinearLayout mPickerContainer = findViewById(R.id.wheel_id_picker_container);
         //year
-        yearWheelItemView = new WheelItemView(lyPickerContainer.getContext());
-        yearWheelItemView.setItemVerticalSpace(itemVerticalSpace);
-        yearWheelItemView.setShowCount(showCount);
-        lyPickerContainer.addView(yearWheelItemView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+        mYearView = new WheelItemView(mPickerContainer.getContext());
+        mYearView.setItemVerticalSpace(itemVerticalSpace);
+        mYearView.setShowCount(showCount);
+        mPickerContainer.addView(mYearView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         //month
-        monthWheelItemView = new WheelItemView(lyPickerContainer.getContext());
-        monthWheelItemView.setItemVerticalSpace(itemVerticalSpace);
-        monthWheelItemView.setShowCount(showCount);
-        lyPickerContainer.addView(monthWheelItemView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+        mMonthView = new WheelItemView(mPickerContainer.getContext());
+        mMonthView.setItemVerticalSpace(itemVerticalSpace);
+        mMonthView.setShowCount(showCount);
+        mPickerContainer.addView(mMonthView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         //day
-        dayWheelItemView = new WheelItemView(lyPickerContainer.getContext());
-        dayWheelItemView.setItemVerticalSpace(itemVerticalSpace);
-        dayWheelItemView.setShowCount(showCount);
-        lyPickerContainer.addView(dayWheelItemView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+        mDayView = new WheelItemView(mPickerContainer.getContext());
+        mDayView.setItemVerticalSpace(itemVerticalSpace);
+        mDayView.setShowCount(showCount);
+        mPickerContainer.addView(mDayView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         //hour
-        hourWheelItemView = new WheelItemView(lyPickerContainer.getContext());
-        hourWheelItemView.setItemVerticalSpace(itemVerticalSpace);
-        hourWheelItemView.setShowCount(showCount);
-        lyPickerContainer.addView(hourWheelItemView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+        mHourView = new WheelItemView(mPickerContainer.getContext());
+        mHourView.setItemVerticalSpace(itemVerticalSpace);
+        mHourView.setShowCount(showCount);
+        mPickerContainer.addView(mHourView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         //minute
-        minuteWheelItemView = new WheelItemView(lyPickerContainer.getContext());
-        minuteWheelItemView.setItemVerticalSpace(itemVerticalSpace);
-        minuteWheelItemView.setShowCount(showCount);
-        lyPickerContainer.addView(minuteWheelItemView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+        mMinuteView = new WheelItemView(mPickerContainer.getContext());
+        mMinuteView.setItemVerticalSpace(itemVerticalSpace);
+        mMinuteView.setShowCount(showCount);
+        mPickerContainer.addView(mMinuteView, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
         tvTitle = findViewById(R.id.wheel_id_title_bar_title);
         tvCancel = findViewById(R.id.wheel_id_title_bar_cancel);
@@ -206,61 +206,58 @@ public class DateTimeWheelDialog extends Dialog {
     }
 
     public void configShowUI(@ShowConfig int config) {
-        configShowUI(config, -1);
+        configShowUI(config, getContext().getResources().getDimensionPixelSize(R.dimen.wheel_picker_total_offset_x));
     }
 
     public void configShowUI(@ShowConfig int showConfig, int totalOffsetX) {
         ensureIsViewInitialized();
-        if (totalOffsetX == -1) {
-            totalOffsetX = getContext().getResources().getDimensionPixelSize(R.dimen.wheel_picker_total_offset_x);
-        }
         this.showConfig = showConfig;
-        yearWheelItemView.setTotalOffsetX(0);
-        monthWheelItemView.setTotalOffsetX(0);
-        dayWheelItemView.setTotalOffsetX(0);
-        hourWheelItemView.setTotalOffsetX(0);
-        minuteWheelItemView.setTotalOffsetX(0);
+        mYearView.setTotalOffsetX(0);
+        mMonthView.setTotalOffsetX(0);
+        mDayView.setTotalOffsetX(0);
+        mHourView.setTotalOffsetX(0);
+        mMinuteView.setTotalOffsetX(0);
         switch (showConfig) {
             case SHOW_YEAR:
-                yearWheelItemView.setVisibility(View.VISIBLE);
-                monthWheelItemView.setVisibility(View.GONE);
-                dayWheelItemView.setVisibility(View.GONE);
-                hourWheelItemView.setVisibility(View.GONE);
-                minuteWheelItemView.setVisibility(View.GONE);
+                mYearView.setVisibility(View.VISIBLE);
+                mMonthView.setVisibility(View.GONE);
+                mDayView.setVisibility(View.GONE);
+                mHourView.setVisibility(View.GONE);
+                mMinuteView.setVisibility(View.GONE);
                 break;
             case SHOW_YEAR_MONTH:
-                yearWheelItemView.setVisibility(View.VISIBLE);
-                monthWheelItemView.setVisibility(View.VISIBLE);
-                dayWheelItemView.setVisibility(View.GONE);
-                hourWheelItemView.setVisibility(View.GONE);
-                minuteWheelItemView.setVisibility(View.GONE);
+                mYearView.setVisibility(View.VISIBLE);
+                mMonthView.setVisibility(View.VISIBLE);
+                mDayView.setVisibility(View.GONE);
+                mHourView.setVisibility(View.GONE);
+                mMinuteView.setVisibility(View.GONE);
                 break;
             case SHOW_YEAR_MONTH_DAY:
-                yearWheelItemView.setVisibility(View.VISIBLE);
-                monthWheelItemView.setVisibility(View.VISIBLE);
-                dayWheelItemView.setVisibility(View.VISIBLE);
-                hourWheelItemView.setVisibility(View.GONE);
-                minuteWheelItemView.setVisibility(View.GONE);
-                yearWheelItemView.setTotalOffsetX(totalOffsetX);
-                dayWheelItemView.setTotalOffsetX(-totalOffsetX);
+                mYearView.setVisibility(View.VISIBLE);
+                mMonthView.setVisibility(View.VISIBLE);
+                mDayView.setVisibility(View.VISIBLE);
+                mHourView.setVisibility(View.GONE);
+                mMinuteView.setVisibility(View.GONE);
+                mYearView.setTotalOffsetX(totalOffsetX);
+                mDayView.setTotalOffsetX(-totalOffsetX);
                 break;
             case SHOW_YEAR_MONTH_DAY_HOUR:
-                yearWheelItemView.setVisibility(View.VISIBLE);
-                monthWheelItemView.setVisibility(View.VISIBLE);
-                dayWheelItemView.setVisibility(View.VISIBLE);
-                hourWheelItemView.setVisibility(View.VISIBLE);
-                minuteWheelItemView.setVisibility(View.GONE);
-                yearWheelItemView.setTotalOffsetX(totalOffsetX);
-                hourWheelItemView.setTotalOffsetX(-totalOffsetX);
+                mYearView.setVisibility(View.VISIBLE);
+                mMonthView.setVisibility(View.VISIBLE);
+                mDayView.setVisibility(View.VISIBLE);
+                mHourView.setVisibility(View.VISIBLE);
+                mMinuteView.setVisibility(View.GONE);
+                mYearView.setTotalOffsetX(totalOffsetX);
+                mHourView.setTotalOffsetX(-totalOffsetX);
                 break;
             case SHOW_YEAR_MONTH_DAY_HOUR_MINUTE:
-                yearWheelItemView.setVisibility(View.VISIBLE);
-                monthWheelItemView.setVisibility(View.VISIBLE);
-                dayWheelItemView.setVisibility(View.VISIBLE);
-                hourWheelItemView.setVisibility(View.VISIBLE);
-                minuteWheelItemView.setVisibility(View.VISIBLE);
-                yearWheelItemView.setTotalOffsetX(totalOffsetX);
-                minuteWheelItemView.setTotalOffsetX(-totalOffsetX);
+                mYearView.setVisibility(View.VISIBLE);
+                mMonthView.setVisibility(View.VISIBLE);
+                mDayView.setVisibility(View.VISIBLE);
+                mHourView.setVisibility(View.VISIBLE);
+                mMinuteView.setVisibility(View.VISIBLE);
+                mYearView.setTotalOffsetX(totalOffsetX);
+                mMinuteView.setTotalOffsetX(-totalOffsetX);
                 break;
         }
     }
@@ -299,15 +296,15 @@ public class DateTimeWheelDialog extends Dialog {
         dayItems = updateItems(DateItem.TYPE_DAY, startDay, dayActualMaximum);
         hourItems = updateItems(DateItem.TYPE_HOUR, startHour, MAX_HOUR);
         minuteItems = updateItems(DateItem.TYPE_MINUTE, startMinute, MAX_MINUTE);
-        yearWheelItemView.setItems(yearItems);
-        monthWheelItemView.setItems(monthItems);
-        dayWheelItemView.setItems(dayItems);
-        hourWheelItemView.setItems(hourItems);
-        minuteWheelItemView.setItems(minuteItems);
+        mYearView.setItems(yearItems);
+        mMonthView.setItems(monthItems);
+        mDayView.setItems(dayItems);
+        mHourView.setItems(hourItems);
+        mMinuteView.setItems(minuteItems);
     }
 
     private void initOnScrollListener() {
-        yearWheelItemView.setOnSelectedListener(new WheelView.OnSelectedListener() {
+        mYearView.setOnSelectedListener(new WheelView.OnSelectedListener() {
             @Override
             public void onSelected(Context context, int selectedIndex) {
                 selectedCalendar.set(Calendar.YEAR, yearItems[selectedIndex].getValue());
@@ -315,7 +312,7 @@ public class DateTimeWheelDialog extends Dialog {
                     onYearChanged();
             }
         });
-        monthWheelItemView.setOnSelectedListener(new WheelView.OnSelectedListener() {
+        mMonthView.setOnSelectedListener(new WheelView.OnSelectedListener() {
             @Override
             public void onSelected(Context context, int selectedIndex) {
                 selectedCalendar.set(Calendar.MONTH, monthItems[selectedIndex].getValue() - 1);
@@ -323,7 +320,7 @@ public class DateTimeWheelDialog extends Dialog {
                     onMonthChanged();
             }
         });
-        dayWheelItemView.setOnSelectedListener(new WheelView.OnSelectedListener() {
+        mDayView.setOnSelectedListener(new WheelView.OnSelectedListener() {
             @Override
             public void onSelected(Context context, int selectedIndex) {
                 selectedCalendar.set(Calendar.DAY_OF_MONTH, dayItems[selectedIndex].getValue());
@@ -331,7 +328,7 @@ public class DateTimeWheelDialog extends Dialog {
                     onDayChanged();
             }
         });
-        hourWheelItemView.setOnSelectedListener(new WheelView.OnSelectedListener() {
+        mHourView.setOnSelectedListener(new WheelView.OnSelectedListener() {
             @Override
             public void onSelected(Context context, int selectedIndex) {
                 selectedCalendar.set(Calendar.HOUR_OF_DAY, hourItems[selectedIndex].getValue());
@@ -339,7 +336,7 @@ public class DateTimeWheelDialog extends Dialog {
                     onHourChanged();
             }
         });
-        minuteWheelItemView.setOnSelectedListener(new WheelView.OnSelectedListener() {
+        mMinuteView.setOnSelectedListener(new WheelView.OnSelectedListener() {
             @Override
             public void onSelected(Context context, int selectedIndex) {
                 selectedCalendar.set(Calendar.MINUTE, minuteItems[selectedIndex].getValue());
@@ -354,15 +351,15 @@ public class DateTimeWheelDialog extends Dialog {
         int hour = selectedCalendar.get(Calendar.HOUR_OF_DAY);
         int minute = selectedCalendar.get(Calendar.MINUTE);
         int index = findSelectedIndexByValue(yearItems, year);
-        yearWheelItemView.setSelectedIndex(index, false);
+        mYearView.setSelectedIndex(index, false);
         index = findSelectedIndexByValue(monthItems, month);
-        monthWheelItemView.setSelectedIndex(index, false);
+        mMonthView.setSelectedIndex(index, false);
         index = findSelectedIndexByValue(dayItems, day);
-        dayWheelItemView.setSelectedIndex(index, false);
+        mDayView.setSelectedIndex(index, false);
         index = findSelectedIndexByValue(hourItems, hour);
-        hourWheelItemView.setSelectedIndex(index, false);
+        mHourView.setSelectedIndex(index, false);
         index = findSelectedIndexByValue(minuteItems, minute);
-        minuteWheelItemView.setSelectedIndex(index, false);
+        mMinuteView.setSelectedIndex(index, false);
     }
 
     private void onYearChanged() {
@@ -395,8 +392,8 @@ public class DateTimeWheelDialog extends Dialog {
             }
         }
         int newSelectedIndex = keepLastSelected ? (lastSelectedIndex == -1 ? 0 : lastSelectedIndex) : 0;
-        monthWheelItemView.setItems(monthItems);
-        monthWheelItemView.setSelectedIndex(newSelectedIndex);
+        mMonthView.setItems(monthItems);
+        mMonthView.setSelectedIndex(newSelectedIndex);
     }
 
     private void onMonthChanged() {
@@ -432,8 +429,8 @@ public class DateTimeWheelDialog extends Dialog {
             }
         }
         int newSelectedIndex = keepLastSelected ? (lastSelectedIndex == -1 ? 0 : lastSelectedIndex) : 0;
-        dayWheelItemView.setItems(dayItems);
-        dayWheelItemView.setSelectedIndex(newSelectedIndex);
+        mDayView.setItems(dayItems);
+        mDayView.setSelectedIndex(newSelectedIndex);
     }
 
     private void onDayChanged() {
@@ -472,8 +469,8 @@ public class DateTimeWheelDialog extends Dialog {
             }
         }
         int newSelectedIndex = keepLastSelected ? (lastSelectedIndex == -1 ? 0 : lastSelectedIndex) : 0;
-        hourWheelItemView.setItems(hourItems);
-        hourWheelItemView.setSelectedIndex(newSelectedIndex);
+        mHourView.setItems(hourItems);
+        mHourView.setSelectedIndex(newSelectedIndex);
     }
 
     private void onHourChanged() {
@@ -515,8 +512,8 @@ public class DateTimeWheelDialog extends Dialog {
             }
         }
         int newSelectedIndex = keepLastSelected ? (lastSelectedIndex == -1 ? 0 : lastSelectedIndex) : 0;
-        minuteWheelItemView.setItems(minuteItems);
-        minuteWheelItemView.setSelectedIndex(newSelectedIndex);
+        mMinuteView.setItems(minuteItems);
+        mMinuteView.setSelectedIndex(newSelectedIndex);
     }
 
     private int findSelectedIndexByValue(DateItem[] items, int value) {
@@ -542,25 +539,25 @@ public class DateTimeWheelDialog extends Dialog {
 
     private boolean isScrolling() {
         if (showConfig == SHOW_YEAR) {
-            return yearWheelItemView.isScrolling();
+            return mYearView.isScrolling();
         } else if (showConfig == SHOW_YEAR_MONTH) {
-            return yearWheelItemView.isScrolling()
-                    || monthWheelItemView.isScrolling();
+            return mYearView.isScrolling()
+                    || mMonthView.isScrolling();
         } else if (showConfig == SHOW_YEAR_MONTH_DAY) {
-            return yearWheelItemView.isScrolling()
-                    || monthWheelItemView.isScrolling()
-                    || dayWheelItemView.isScrolling();
+            return mYearView.isScrolling()
+                    || mMonthView.isScrolling()
+                    || mDayView.isScrolling();
         } else if (showConfig == SHOW_YEAR_MONTH_DAY_HOUR) {
-            return yearWheelItemView.isScrolling()
-                    || monthWheelItemView.isScrolling()
-                    || dayWheelItemView.isScrolling()
-                    || hourWheelItemView.isScrolling();
+            return mYearView.isScrolling()
+                    || mMonthView.isScrolling()
+                    || mDayView.isScrolling()
+                    || mHourView.isScrolling();
         } else {
-            return yearWheelItemView.isScrolling()
-                    || monthWheelItemView.isScrolling()
-                    || dayWheelItemView.isScrolling()
-                    || hourWheelItemView.isScrolling()
-                    || minuteWheelItemView.isScrolling();
+            return mYearView.isScrolling()
+                    || mMonthView.isScrolling()
+                    || mDayView.isScrolling()
+                    || mHourView.isScrolling()
+                    || mMinuteView.isScrolling();
         }
     }
 

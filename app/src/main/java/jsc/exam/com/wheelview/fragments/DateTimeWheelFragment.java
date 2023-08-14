@@ -1,13 +1,14 @@
 package jsc.exam.com.wheelview.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -89,14 +90,14 @@ public class DateTimeWheelFragment extends Fragment {
 
     private DateTimeWheelDialog createDialog(int type) {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, 2015);
+        calendar.set(Calendar.YEAR, 2022);
         calendar.set(Calendar.MONTH, 0);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         Date startDate = calendar.getTime();
         calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, 2020);
+        calendar.set(Calendar.YEAR, 2050);
         Date endDate = calendar.getTime();
 
         DateTimeWheelDialog dialog = new DateTimeWheelDialog(getActivity());

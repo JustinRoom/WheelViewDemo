@@ -2,22 +2,14 @@ package jsc.exam.com.wheelview;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
-/**
- * Empty activity for launching any {@link Fragment}.
- *
- * <br>Email:1006368252@qq.com
- * <br>QQ:1006368252
- * <br><a href="https://github.com/JustinRoom/WheelViewDemo" target="_blank">https://github.com/JustinRoom/WheelViewDemo</a>
- *
- * @author jiangshicheng
- */
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 public abstract class BaseEmptyFragmentActivity extends AppCompatActivity {
 
     public final static String EXTRA_FULL_SCREEN = "full_screen";
@@ -69,7 +61,8 @@ public abstract class BaseEmptyFragmentActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        if (getIntent().getBooleanExtra(EXTRA_LANDSCAPE, false) && getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+        if (getIntent().getBooleanExtra(EXTRA_LANDSCAPE, false)
+                && getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
         super.onResume();
