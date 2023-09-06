@@ -149,7 +149,7 @@ public class WheelView extends View implements IWheelViewSetting {
         totalOffsetX = a.getDimensionPixelSize(R.styleable.WheelView_wheelTotalOffsetX, 0);
         itemVerticalSpace = a.getDimensionPixelSize(R.styleable.WheelView_wheelItemVerticalSpace, 32);
         wheelRotationX = a.getFloat(R.styleable.WheelView_wheelRotationX, DEFAULT_ROTATION_X);
-        velocityUnits = a.getInteger(R.styleable.WheelView_wheelRotationX, DEFAULT_VELOCITY_UNITS);
+        velocityUnits = a.getInteger(R.styleable.WheelView_wheelVelocityUnits, DEFAULT_VELOCITY_UNITS);
         if (velocityUnits < 0) {
             velocityUnits = Math.abs(velocityUnits);
         }
